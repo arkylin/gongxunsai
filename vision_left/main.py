@@ -3,6 +3,9 @@ import numpy as np
 import time
 import math
 import serial
+import platform
+
+system = platform.system()
 
 # 定义黄色和灰色的颜色范围
 lower_yellow = np.array([20, 70, 0])
@@ -61,15 +64,25 @@ def guaijiaoshibie(jiaodiancanshu):
     else:
         GUAIJIAO = 0
 
-def vision_left(conn):
 
+def vision_left(conn):
     # 创建串口对象
-    ser = serial.Serial(
-        # port='/dev/ttyUSB0',  # 串口设备号，根据实际情况修改
-        port='COM1',
-        baudrate=115200,  # 波特率，根据实际情况修改
-        timeout=1  # 超时时间，根据实际情况修改
-    )
+    if system == 'Windows':
+        ser = serial.Serial(
+            # port='/dev/ttyUSB0',  # 串口设备号，根据实际情况修改
+            port='COM1',
+            baudrate=115200,  # 波特率，根据实际情况修改
+            timeout=1  # 超时时间，根据实际情况修改
+        )
+    elif system == 'Linux':
+        ser = serial.Serial(
+            port='/dev/ttyUSB0',  # 串口设备号，根据实际情况修改
+            # port='COM1',
+            baudrate=115200,  # 波特率，根据实际情况修改
+            timeout=1  # 超时时间，根据实际情况修改
+        )
+    else:
+        print(system)
     # 初始化摄像头
     cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 
@@ -186,10 +199,10 @@ def vision_left(conn):
                     end_time = time.perf_counter()
                     print("Left: " + str((end_time-start_time)*1000) + "ms")
 
-        # 按下 'q' 键退出循环
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+    #     # 按下 'q' 键退出循环
+    #     if cv2.waitKey(1) & 0xFF == ord('q'):
+    #         break
 
-    # 释放摄像头资源
-    cap.release()
-    cv2.destroyAllWindows()
+    # # 释放摄像头资源
+    # cap.release()
+    # cv2.destroyAllWindows()

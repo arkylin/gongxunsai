@@ -1,7 +1,6 @@
 import multiprocessing
 import psutil
 
-import serial_com.main
 import vision_left.main
 import vision_block.main
 
