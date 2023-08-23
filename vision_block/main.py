@@ -10,7 +10,7 @@ category_num = 6
 input_width = 352
 input_height = 352
 LABEL_NAMES = ["green","red","blue","green_box","red_box","blue_box"]
-weight = "770-1.pth"
+weight = "vision_block/770-1.pth"
 thresh = 0.95
 
 def vision_block(conn):
