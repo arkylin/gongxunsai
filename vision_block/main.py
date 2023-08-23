@@ -1,6 +1,6 @@
 import os
 import cv2
-import time
+# import time
 
 import torch
 from .utils.tool import *
@@ -37,7 +37,7 @@ def vision_block(conn):
     # 初始化摄像头
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     while True:
-        start_time = time.perf_counter()
+        # start_time = time.perf_counter()
         # 读取摄像头图像
         ret, frame = cap.read()
         # 数据预处理
@@ -62,16 +62,20 @@ def vision_block(conn):
 
         # 绘制预测框
         for box in output[0]:
-            print(box)
-            end_time = time.perf_counter()
-            print("block" + str((end_time-start_time)*1000) + "ms")
-    #         box = box.tolist()
+            # print(box)
+            # end_time = time.perf_counter()
+            # print("block" + str((end_time-start_time)*1000) + "ms")
+            box = box.tolist()
         
-    #         obj_score = box[4]
-    #         category = LABEL_NAMES[int(box[5])]
+            obj_score = box[4]
+            category = LABEL_NAMES[int(box[5])]
 
-    #         x1, y1 = int(box[0] * W), int(box[1] * H)
-    #         x2, y2 = int(box[2] * W), int(box[3] * H)
+            x1, y1 = int(box[0] * W), int(box[1] * H)
+            x2, y2 = int(box[2] * W), int(box[3] * H)
+
+            print([category, int(obj_score*100), x1, y1, x2, y2])
+            # conn.send("123")
+            conn.send([category, int(obj_score*100), x1, y1, x2, y2])
 
     #         cv2.rectangle(ori_img, (x1, y1), (x2, y2), (255, 255, 0), 2)
     #         cv2.putText(ori_img, '%.2f' % obj_score, (x1, y1 - 5), 0, 0.7, (0, 255, 0), 2)	

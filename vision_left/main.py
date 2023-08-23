@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import time
+# import time
 import math
 import serial
 import platform
@@ -87,7 +87,7 @@ def vision_left(conn):
     cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 
     while True:
-        start_time = time.perf_counter()
+        # start_time = time.perf_counter()
         # 读取摄像头图像
         ret, frame = cap.read()
         frame = cv2.resize(frame, frame_wh)
@@ -188,6 +188,14 @@ def vision_left(conn):
                     # 拐角识别
                     guaijiaoshibie(approx)
 
+                    # block = conn.recv()
+
+                    # print(block)
+                    if conn.poll():
+                        print(conn.recv())
+                    else:
+                        print("None")
+
                     # 发送串口数据
                     frame_data = [10, int(hex_representation[:2],16), int(hex_representation[2:],16), dheight, GUAIJIAO, 13]
                     # 将帧数据转换为16进制字符串
@@ -196,8 +204,8 @@ def vision_left(conn):
                     # print(hex_frame)
                     # 将数据发送到串口
                     ser.write(hex_frame)
-                    end_time = time.perf_counter()
-                    print("Left: " + str((end_time-start_time)*1000) + "ms")
+                    # end_time = time.perf_counter()
+                    # print("Left: " + str((end_time-start_time)*1000) + "ms")
 
     #     # 按下 'q' 键退出循环
     #     if cv2.waitKey(1) & 0xFF == ord('q'):
