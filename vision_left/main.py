@@ -89,7 +89,7 @@ def vision_left(conn):
     elif system == 'Linux':
         port='/dev/ttyUSB0'
         # 初始化摄像头
-        cap = cv2.VideoCapture("/dev/left_video")
+        cap = cv2.VideoCapture("/dev/left_video0")
     else:
         print(system)
     cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))

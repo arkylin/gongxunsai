@@ -34,7 +34,7 @@ def vision_block(conn):
         cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     elif system == 'Linux':
         # 初始化摄像头
-        cap = cv2.VideoCapture("/dev/block_video")
+        cap = cv2.VideoCapture("/dev/block_video0")
     else:
         print(system)
         

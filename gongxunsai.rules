@@ -1,2 +1,2 @@
-KERNEL=="video*", ATTRS{idVendor}=="05a3", ATTRS{idProduct}=="9230", MODE:="0777", SYMLINK+="left_video"
-KERNEL=="video*", ATTRS{idVendor}=="2993", ATTRS{idProduct}=="0858", MODE:="0777", SYMLINK+="block_video"
+KERNEL=="video*", ATTRS{idVendor}=="05a3", ATTRS{idProduct}=="9230", MODE:="0777", SYMLINK+="left_video0"
+KERNEL=="video*", ATTRS{idVendor}=="2993", ATTRS{idProduct}=="0858", MODE:="0777", SYMLINK+="block_video0"
