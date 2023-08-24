@@ -70,7 +70,7 @@ def send_serial_data(ser,frame_data):
     # 发送串口数据
     # 将帧数据转换为16进制字符串
     hex_frame = bytes(frame_data)
-    # print("已发送串口：", frame_data[:])
+    print("串口已发送：", frame_data[:])
     # print(hex_frame)
     # 将数据发送到串口
     ser.write(hex_frame)
@@ -179,11 +179,14 @@ def vision_left(conn):
                     dx = bottom_points[1][0][0] - bottom_points[0][0][0]
                     dy = bottom_points[1][0][1] - bottom_points[0][0][1]
                     # Todo dx非零
-                    slope = dy / dx
+                    if dx != 0:
+                        slope = dy / dx
 
-                    # 计算夹角
-                    angle_rad = math.atan(slope)
-                    angle_deg = math.degrees(angle_rad)
+                        # 计算夹角
+                        angle_rad = math.atan(slope)
+                        angle_deg = math.degrees(angle_rad)
+                    else:
+                        angle_deg = 90
 
                     # 计算直线的斜率
                     # dlx = bottom_points[1][0][0] + bottom_points[0][0][0]

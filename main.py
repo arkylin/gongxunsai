@@ -17,11 +17,11 @@ if __name__ == '__main__':
     psutil.Process(p_angle.pid).cpu_affinity([1])
     processes.append(p_angle)
 
-    # p_block = multiprocessing.Process(target=vision_block.main.vision_block,args=(conn2,))
-    # # os.sched_setaffinity(p.pid,[i]) # 绑定到第i个CPU核心
-    # p_block.start()
-    # psutil.Process(p_block.pid).cpu_affinity([2])
-    # processes.append(p_block)
+    p_block = multiprocessing.Process(target=vision_block.main.vision_block,args=(conn2,))
+    # os.sched_setaffinity(p.pid,[i]) # 绑定到第i个CPU核心
+    p_block.start()
+    psutil.Process(p_block.pid).cpu_affinity([2])
+    processes.append(p_block)
 
     
     # 等待所有进程完成
