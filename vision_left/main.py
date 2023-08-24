@@ -228,7 +228,8 @@ def vision_left(conn):
                                 old_value_x = last_x_data
                                 old_value_y = max_value_y
                                 
-                                frame_data = [8,zhuantai_flag,int((last_x_data-claw_xy[0])/frame_wh[0]*255),int((max_value_y-claw_xy[1])/frame_wh[0]*255),9]
+                                frame_data = [8,zhuantai_flag,int((last_x_data-claw_xy[0])/frame_wh[0]*255),int((max_value_y-claw_xy[1])/frame_wh[1]*255),9]
+                                print (frame_data)
                                 send_serial_data(ser,frame_data)
                         # else:
                         #     print("None")
