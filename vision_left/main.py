@@ -69,8 +69,8 @@ def guaijiaoshibie(jiaodiancanshu):
 def send_serial_data(ser,frame_data):
     # 发送串口数据
     # 将帧数据转换为16进制字符串
-    hex_frame = bytes(frame_data)
     print("串口已发送：", frame_data[:])
+    hex_frame = bytes(frame_data)
     # print(hex_frame)
     # 将数据发送到串口
     ser.write(hex_frame)
@@ -227,7 +227,12 @@ def vision_left(conn):
                                     zhuantai_flag = 1;
                                 old_value_x = last_x_data
                                 old_value_y = max_value_y
-                                
+                                zhuanpan_juli_center_x = int((last_x_data-claw_xy[0])/frame_wh[0]*255)
+                                zhuanpan_juli_center_y = int((max_value_y-claw_xy[1])/frame_wh[1]*255)
+                                if zhuanpan_juli_center_x < 0:
+                                     zhuanpan_juli_center_x += 256
+                                if zhuanpan_juli_center_y < 0:
+                                     zhuanpan_juli_center_y += 256
                                 frame_data = [8,zhuantai_flag,int((last_x_data-claw_xy[0])/frame_wh[0]*255),int((max_value_y-claw_xy[1])/frame_wh[1]*255),9]
                                 print (frame_data)
                                 send_serial_data(ser,frame_data)
