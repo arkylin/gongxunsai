@@ -37,48 +37,51 @@ def vision_block(conn):
         cap = cv2.VideoCapture("/dev/block_video")
     else:
         print(system)
-    cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
-    while True:
-        # start_time = time.perf_counter()
-        # 读取摄像头图像
-        ret, frame = cap.read()
-        send_data = []
-        # 数据预处理
-        res_img = cv2.resize(frame, (input_width, input_height), interpolation = cv2.INTER_LINEAR) 
-        img = res_img.reshape(1, input_height, input_width, 3)
-        img = torch.from_numpy(img.transpose(0, 3, 1, 2))
-        img = img.to(device).float() / 255.0
+    if cap.isOpened():
+        cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
+        while True:
+            # start_time = time.perf_counter()
+            # 读取摄像头图像
+            ret, frame = cap.read()
+            send_data = []
+            # 数据预处理
+            res_img = cv2.resize(frame, (input_width, input_height), interpolation = cv2.INTER_LINEAR) 
+            img = res_img.reshape(1, input_height, input_width, 3)
+            img = torch.from_numpy(img.transpose(0, 3, 1, 2))
+            img = img.to(device).float() / 255.0
 
-        # 模型推理
-        # start = time.perf_counter()
-        preds = model(img)
-        # end = time.perf_counter()
-        # time = (end - start) * 1000.
-        # print("forward time:%fms"%time)
+            # 模型推理
+            # start = time.perf_counter()
+            preds = model(img)
+            # end = time.perf_counter()
+            # time = (end - start) * 1000.
+            # print("forward time:%fms"%time)
 
-        # 特征图后处理
-        output = handle_preds(preds, device, thresh)
-        
-        H, W = frame_wh
-        scale_h, scale_w = H / input_height, W / input_width
+            # 特征图后处理
+            output = handle_preds(preds, device, thresh)
+            
+            H, W = frame_wh
+            scale_h, scale_w = H / input_height, W / input_width
 
-        # 绘制预测框
-        for box in output[0]:
-            # print(box)
-            # end_time = time.perf_counter()
-            # print("block" + str((end_time-start_time)*1000) + "ms")
-            box = box.tolist()
-        
-            obj_score = box[4]
-            category = LABEL_NAMES[int(box[5])]
+            # 绘制预测框
+            for box in output[0]:
+                # print(box)
+                # end_time = time.perf_counter()
+                # print("block" + str((end_time-start_time)*1000) + "ms")
+                box = box.tolist()
+            
+                obj_score = box[4]
+                category = LABEL_NAMES[int(box[5])]
 
-            x1, y1 = int(box[0] * W), int(box[1] * H)
-            x2, y2 = int(box[2] * W), int(box[3] * H)
+                x1, y1 = int(box[0] * W), int(box[1] * H)
+                x2, y2 = int(box[2] * W), int(box[3] * H)
 
-            # print([category, int(obj_score*100), x1, y1, x2, y2])
-            # conn.send("123")
-            # int(obj_score*100) # 置信度
-            send_data.append([category, int((x1+x2)/2), int((y1+y2)/2)])
-        if len(send_data) !=0:
-            # time.sleep(1)
-            conn.send(send_data)
+                # print([category, int(obj_score*100), x1, y1, x2, y2])
+                # conn.send("123")
+                # int(obj_score*100) # 置信度
+                send_data.append([category, int((x1+x2)/2), int((y1+y2)/2)])
+            if len(send_data) !=0:
+                # time.sleep(1)
+                conn.send(send_data)
+    else:
+        print("Block摄像头无法打开")
