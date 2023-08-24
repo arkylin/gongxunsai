@@ -1,0 +1,6 @@
+psutil
+opencv-python
+torch
+torchvision
+pyserial
+numpy

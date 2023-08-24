@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-# import time
+import time
 import math
 import serial
 import platform
@@ -12,6 +12,8 @@ lower_yellow = np.array([20, 70, 0])
 upper_yellow = np.array([40, 255, 255])
 
 frame_wh = (400,300)
+
+claw_xy = (200, 150)
 
 GUAIJIAO = 0
 # jiaodianshu_last = 0
@@ -34,7 +36,7 @@ def kalman(val):
     P = (EYE - K * H) * P_
     return X[0]
 
-filtered_values = []
+# filtered_values = []
 
 def guaijiaoshibie(jiaodiancanshu):
     jiaodianshu = len(jiaodiancanshu)
@@ -64,27 +66,44 @@ def guaijiaoshibie(jiaodiancanshu):
     else:
         GUAIJIAO = 0
 
+def send_serial_data(ser,frame_data):
+    # 发送串口数据
+    # 将帧数据转换为16进制字符串
+    hex_frame = bytes(frame_data)
+    # print("已发送串口：", frame_data[:])
+    # print(hex_frame)
+    # 将数据发送到串口
+    ser.write(hex_frame)
+
 
 def vision_left(conn):
+    #初始化变量
+    old_value_x = 0
+    old_value_y = 0
+    serial_available = 0
     # 创建串口对象
     if system == 'Windows':
-        ser = serial.Serial(
-            # port='/dev/ttyUSB0',  # 串口设备号，根据实际情况修改
-            port='COM1',
-            baudrate=115200,  # 波特率，根据实际情况修改
-            timeout=1  # 超时时间，根据实际情况修改
-        )
+        port='COM1'
+        # 初始化摄像头
+        cap = cv2.VideoCapture(2, cv2.CAP_DSHOW)
     elif system == 'Linux':
-        ser = serial.Serial(
-            port='/dev/ttyUSB0',  # 串口设备号，根据实际情况修改
-            # port='COM1',
-            baudrate=115200,  # 波特率，根据实际情况修改
-            timeout=1  # 超时时间，根据实际情况修改
-        )
+        port='/dev/ttyUSB0'
+        # 初始化摄像头
+        cap = cv2.VideoCapture("/dev/left_video")
     else:
         print(system)
-    # 初始化摄像头
-    cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+    cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
+    try:
+        ser = serial.Serial(
+            port=port,
+            baudrate=115200,  # 波特率，根据实际情况修改
+            timeout=1  # 超时时间，根据实际情况修改
+        )
+        serial_available = 1
+        print("检测到串口")
+    except:
+        serial_available = 0
+        print("没有检测到串口")
 
     while True:
         # start_time = time.perf_counter()
@@ -188,29 +207,28 @@ def vision_left(conn):
                     # 拐角识别
                     guaijiaoshibie(approx)
 
-                    # block = conn.recv()
-
-                    # print(block)
+                    # 接收到来自Block程序的数据
                     if conn.poll():
-                        print(conn.recv())
-                    else:
-                        print("None")
+                        # print(conn.recv())
+                        block_data = conn.recv() # [['red_box', 113, 105]]
+                        # 判断最下面的物块
+                        last_values_y = [item[-1] for item in block_data]
+                        max_value_y = max(last_values_y)
+                        max_index_y = last_values_y.index(max_value_y)
+                        last_x_data = block_data[max_index_y][1]
+                        if abs(old_value_y-max_value_y) < 20 and abs(old_value_x-last_x_data) < 20:
+                            print(last_x_data-claw_xy[0],max_value_y-claw_xy[1])
+                        old_value_x = last_x_data
+                        old_value_y = max_value_y
+                    # else:
+                    #     print("None")
 
                     # 发送串口数据
                     frame_data = [10, int(hex_representation[:2],16), int(hex_representation[2:],16), dheight, GUAIJIAO, 13]
-                    # 将帧数据转换为16进制字符串
-                    hex_frame = bytes(frame_data)
-                    print(frame_data[:])
-                    # print(hex_frame)
-                    # 将数据发送到串口
-                    ser.write(hex_frame)
+                    # print(frame_data[:])
+                    if serial_available == 1:
+                        send_serial_data(ser,frame_data)
+                    else:
+                        print(frame_data[:])
                     # end_time = time.perf_counter()
                     # print("Left: " + str((end_time-start_time)*1000) + "ms")
-
-    #     # 按下 'q' 键退出循环
-    #     if cv2.waitKey(1) & 0xFF == ord('q'):
-    #         break
-
-    # # 释放摄像头资源
-    # cap.release()
-    # cv2.destroyAllWindows()
