@@ -92,8 +92,8 @@ def vision_left(conn):
         cap = cv2.VideoCapture("/dev/left_video")
     else:
         print(system)
+    cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
     if cap.isOpened():
-        cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
         try:
             ser = serial.Serial(
                 port=port,
