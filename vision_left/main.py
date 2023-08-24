@@ -233,7 +233,7 @@ def vision_left(conn):
                                      zhuanpan_juli_center_x += 256
                                 if zhuanpan_juli_center_y < 0:
                                      zhuanpan_juli_center_y += 256
-                                frame_data = [8,zhuantai_flag,int((last_x_data-claw_xy[0])/frame_wh[0]*255),int((max_value_y-claw_xy[1])/frame_wh[1]*255),9]
+                                frame_data = [8,zhuantai_flag,zhuanpan_juli_center_x,zhuanpan_juli_center_y,9]
                                 print (frame_data)
                                 send_serial_data(ser,frame_data)
                         # else:
