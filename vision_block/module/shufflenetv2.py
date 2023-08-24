@@ -96,7 +96,7 @@ class ShuffleNetV2(nn.Module):
         if load_param == False:
             self._initialize_weights()
         else:
-            print("加载模型...")
+            print("正在加载模型...")
 
     def forward(self, x):
         x = self.first_conv(x)

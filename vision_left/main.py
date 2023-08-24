@@ -215,15 +215,21 @@ def vision_left(conn):
                         if conn.poll():
                             # print(conn.recv())
                             block_data = conn.recv() # [['red_box', 113, 105]]
-                            # 判断最下面的物块
-                            last_values_y = [item[-1] for item in block_data]
-                            max_value_y = max(last_values_y)
-                            max_index_y = last_values_y.index(max_value_y)
-                            last_x_data = block_data[max_index_y][1]
-                            if abs(old_value_y-max_value_y) < 20 and abs(old_value_x-last_x_data) < 20:
-                                print(last_x_data-claw_xy[0],max_value_y-claw_xy[1])
-                            old_value_x = last_x_data
-                            old_value_y = max_value_y
+                            if len(block_data) != 0:
+                                zhuantai_flag = 0
+                                # 判断最下面的物块
+                                last_values_y = [item[-1] for item in block_data]
+                                max_value_y = max(last_values_y)
+                                max_index_y = last_values_y.index(max_value_y)
+                                last_x_data = block_data[max_index_y][1]
+                                if abs(old_value_y-max_value_y) < 20 and abs(old_value_x-last_x_data) < 20:
+                                    # print(last_x_data-claw_xy[0],max_value_y-claw_xy[1])
+                                    zhuantai_flag = 1;
+                                old_value_x = last_x_data
+                                old_value_y = max_value_y
+                                
+                                frame_data = [8,zhuantai_flag,int((last_x_data-claw_xy[0])/frame_wh[0]*255),int((max_value_y-claw_xy[1])/frame_wh[0]*255),9]
+                                send_serial_data(ser,frame_data)
                         # else:
                         #     print("None")
 
