@@ -222,14 +222,9 @@ def vision_left(conn):
                         if conn.poll():
                             block_data = conn.recv()
                             if len(block_data) > 0:
-                                if len(block_data) == 1 and block_data[0][0] == 'green':
-                                    frame_data.append(1)
-                                    frame_data.append(0)
-                                    frame_data.append(0)
-                                else:
-                                    frame_data.append(0)
-                                    frame_data.append(0)
-                                    frame_data.append(0)
+                                frame_data.append(1)
+                                frame_data.append(block_data[0][1])
+                                frame_data.append(block_data[0][2])
                             else:
                                 frame_data.append(0)
                                 frame_data.append(0)
