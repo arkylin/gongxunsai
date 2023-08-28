@@ -105,7 +105,7 @@ def decode_qr_code(image, iswin=False):
 def update_screen_by_qrcode(image,ser="",action=1):
     data = decode_qr_code(image)
     if action == 1:
-        if len(data) > 0 and len(data[0] == 7):
+        if len(data) > 0 and len(data[0]) == 7:
             with open(qrcode_data, "w") as file:
                 file.write(data[0])
                 file.close()
