@@ -27,7 +27,7 @@ def run_process():
         running_process = process
         for line in iter(process.stdout.readline, ''):
             log_queue.put(line.strip())
-            print(line.strip())
+            # print(line.strip())
         process.stdout.close()
         process.wait()
 
@@ -63,6 +63,7 @@ def stop():
             running_process = None
             running_event = 0
         return jsonify({'message': 'Process stopped.'})
+    return jsonify({'message': 'Process not run.'})
 
 @app.route('/clear')
 def clear():
