@@ -1,4 +1,5 @@
 import cv2
+import os
 import numpy as np
 import time
 import math
@@ -18,6 +19,8 @@ claw_xy = (200, 150)
 
 GUAIJIAO = 0
 # jiaodianshu_last = 0
+
+qrcode_data = "qrcode.txt"
 
 X = np.asarray([0])  # 最优估计状态
 P = np.asarray([1])  # 最优状态协方差矩阵
@@ -99,6 +102,28 @@ def decode_qr_code(image, iswin=False):
         cv2.imshow("Image", image)
     return data
 
+def update_screen_by_qrcode(image,ser="",action=1,file_or_ser=0):
+    data = decode_qr_code(image)
+    if action == 1:
+        # if os.path.exists(qrcode_data):
+        #     os.remove(qrcode_data)
+        if len(data) > 0:
+            if file_or_ser == 0:
+                # 打开文件并写入内容
+                with open(qrcode_data, "w") as file:
+                    file.write(data[0])
+                    file.close()
+            else:
+                if ser != "":
+                    # print(type(data[0]))
+                    ser.write(("t0.txt=\""+ data[0] +"\"").encode())
+                    ser.write(bytes.fromhex('ff ff ff'))      
+    elif action == 0:
+        with open(qrcode_data, "r") as file:
+            data = file.read()
+            file.close()
+            return data
+
 def vision_left(conn):
     #初始化变量
     old_value_x = 0
@@ -108,7 +133,7 @@ def vision_left(conn):
     if system == 'Windows':
         port='COM1'
         # 初始化摄像头
-        cap = cv2.VideoCapture(2, cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     elif system == 'Linux':
         port='/dev/ttyUSB0'
         # 初始化摄像头
@@ -271,4 +296,12 @@ def vision_left(conn):
         print("Left摄像头无法打开")
 
 if __name__ == '__main__':
-    vision_left(False)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    ser = serial.Serial(
+        port="COM1",
+        baudrate=115200,  # 波特率，根据实际情况修改
+        timeout=1  # 超时时间，根据实际情况修改
+    )
+    while True:
+        ret, frame = cap.read()
+        update_screen_by_qrcode(frame,ser,1,1)
