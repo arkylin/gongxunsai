@@ -14,13 +14,13 @@ if __name__ == '__main__':
     p_angle = multiprocessing.Process(target=vision_left.main.vision_left,args=(conn1,))
     # os.sched_setaffinity(p.pid,[i]) # 绑定到第i个CPU核心
     p_angle.start()
-    psutil.Process(p_angle.pid).cpu_affinity([0])
+    psutil.Process(p_angle.pid).cpu_affinity([0,1])
     processes.append(p_angle)
 
     p_block = multiprocessing.Process(target=vision_block.main.vision_block,args=(conn2,))
     # os.sched_setaffinity(p.pid,[i]) # 绑定到第i个CPU核心
     p_block.start()
-    psutil.Process(p_block.pid).cpu_affinity([1,2,3])
+    psutil.Process(p_block.pid).cpu_affinity([2,3])
     processes.append(p_block)
 
     
