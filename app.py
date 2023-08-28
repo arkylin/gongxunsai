@@ -27,6 +27,7 @@ def run_process():
         running_process = process
         for line in iter(process.stdout.readline, ''):
             log_queue.put(line.strip())
+            print(line.strip())
         process.stdout.close()
         process.wait()
 
