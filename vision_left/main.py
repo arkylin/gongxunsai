@@ -229,6 +229,10 @@ def vision_left(conn):
                                 frame_data.append(0)
                                 frame_data.append(0)
                                 frame_data.append(0)
+                        else:
+                            frame_data.append(0)
+                            frame_data.append(0)
+                            frame_data.append(0)
 
                         # 发送串口数据
                         frame_data.append(13)
