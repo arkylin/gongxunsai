@@ -213,9 +213,11 @@ def vision_left(conn):
 
                         # 接收到来自Block程序的数据
                         if conn.poll():
-                            frame_data = [8,0,0,0,9]
-                            print (frame_data)
-                            send_serial_data(ser,frame_data)
+                            block_data = conn.recv()
+                            if block_data == "Hello":
+                                frame_data = [8,0,0,0,9]
+                                # print (frame_data)
+                                send_serial_data(ser,frame_data)
                             # print(conn.recv())
                             # block_data = conn.recv() # [['red_box', 113, 105]]
                             # if len(block_data) != 0:
