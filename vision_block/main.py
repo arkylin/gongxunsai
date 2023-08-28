@@ -36,6 +36,7 @@ def vision_block(conn):
         
     cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
     if cap.isOpened():
+        print('Video Block启动成功！')
         while True:
             # start_time = time.perf_counter()
             # 读取摄像头图像

@@ -140,6 +140,7 @@ def vision_left(conn):
         print(system)
     cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
     if cap.isOpened():
+        print('Video Left启动成功！')
         try:
             ser = serial.Serial(
                 port=port,
