@@ -218,21 +218,22 @@ def vision_left(conn):
                         frame_data.append(dheight)
                         frame_data.append(GUAIJIAO)
 
+                        frame_data.append(0)
+                        frame_data.append(0)
+                        frame_data.append(0)
                         # 接收到来自Block程序的数据
                         if conn.poll():
                             block_data = conn.recv()
                             if len(block_data) > 0:
-                                frame_data.append(1)
-                                frame_data.append(block_data[0][1])
-                                frame_data.append(block_data[0][2])
-                            else:
-                                frame_data.append(0)
-                                frame_data.append(0)
-                                frame_data.append(0)
-                        else:
-                            frame_data.append(0)
-                            frame_data.append(0)
-                            frame_data.append(0)
+                                frame_data[5] = 1
+                                delta_block_x = int((block_data[0][1] - frame_wh[0]/2)/frame_wh[0]*255)
+                                delta_block_y = int((block_data[0][2] - frame_wh[1]/2)/frame_wh[1]*255)
+                                if delta_block_x < 0:
+                                    delta_block_x = 255 - delta_block_x
+                                if delta_block_y < 0:
+                                    delta_block_y = 255 - delta_block_y
+                                frame_data[6] = delta_block_x
+                                frame_data[7] = delta_block_y
 
                         # 发送串口数据
                         frame_data.append(13)
