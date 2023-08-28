@@ -171,8 +171,10 @@ def vision_left(conn):
             frame = cv2.resize(frame, frame_wh)
 
             if os.path.exists(qrcode_data):
+                print("识别到二维码")
                 pass
             else:
+                print("正在识别二维码")
                 update_screen_by_qrcode(frame,ser0,1)
                 continue
 
