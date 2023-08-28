@@ -102,22 +102,17 @@ def decode_qr_code(image, iswin=False):
         cv2.imshow("Image", image)
     return data
 
-def update_screen_by_qrcode(image,ser="",action=1,file_or_ser=0):
+def update_screen_by_qrcode(image,ser="",action=1):
     data = decode_qr_code(image)
     if action == 1:
-        # if os.path.exists(qrcode_data):
-        #     os.remove(qrcode_data)
-        if len(data) > 0:
-            if file_or_ser == 0:
-                # 打开文件并写入内容
-                with open(qrcode_data, "w") as file:
-                    file.write(data[0])
-                    file.close()
-            else:
-                if ser != "":
-                    # print(type(data[0]))
-                    ser.write(("t0.txt=\""+ data[0] +"\"").encode())
-                    ser.write(bytes.fromhex('ff ff ff'))      
+        if len(data) > 0 and len(data[0] == 7):
+            with open(qrcode_data, "w") as file:
+                file.write(data[0])
+                file.close()
+            if ser != "":
+                # print(type(data[0]))
+                ser.write(("t0.txt=\""+ data[0] +"\"").encode())
+                ser.write(bytes.fromhex('ff ff ff'))      
     elif action == 0:
         with open(qrcode_data, "r") as file:
             data = file.read()
@@ -129,6 +124,9 @@ def vision_left(conn):
     old_value_x = 0
     old_value_y = 0
     serial_available = 0
+    serial0_available = 0
+    if os.path.exists(qrcode_data):
+        os.remove(qrcode_data)
     # 创建串口对象
     if system == 'Windows':
         port='COM1'
@@ -149,17 +147,33 @@ def vision_left(conn):
                 timeout=1  # 超时时间，根据实际情况修改
             )
             serial_available = 1
-            print("检测到串口")
+            print("检测到STM32串口")
         except:
             serial_available = 0
-            print("没有检测到串口")
+            print("没有检测到STM32串口")
+        try:
+            ser0 = serial.Serial(
+                port="/dev/serial0",
+                baudrate=115200,  # 波特率，根据实际情况修改
+                timeout=1  # 超时时间，根据实际情况修改
+            )
+            serial0_available = 1
+            print("检测到屏幕串口")
+        except:
+            serial0_available = 0
+            print("没有检测到屏幕串口")
 
         while True:
             # start_time = time.perf_counter()
             # 读取摄像头图像
             ret, frame = cap.read()
             frame = cv2.resize(frame, frame_wh)
-            
+
+            if os.path.exists(qrcode_data):
+                pass
+            else:
+                update_screen_by_qrcode(frame,ser0,1)
+                continue
 
             # 将图像转换为HSV颜色空间
             hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -315,4 +329,4 @@ if __name__ == '__main__':
     )
     while True:
         ret, frame = cap.read()
-        update_screen_by_qrcode(frame,ser,1,1)
+        update_screen_by_qrcode(frame,ser,1)
