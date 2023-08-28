@@ -229,9 +229,9 @@ def vision_left(conn):
                                 delta_block_x = int((block_data[0][1] - frame_wh[0]/2)/frame_wh[0]*255)
                                 delta_block_y = int((block_data[0][2] - frame_wh[1]/2)/frame_wh[1]*255)
                                 if delta_block_x < 0:
-                                    delta_block_x = 255 - delta_block_x
+                                    delta_block_x = 255 + delta_block_x
                                 if delta_block_y < 0:
-                                    delta_block_y = 255 - delta_block_y
+                                    delta_block_y = 255 + delta_block_y
                                 frame_data[6] = delta_block_x
                                 frame_data[7] = delta_block_y
 
