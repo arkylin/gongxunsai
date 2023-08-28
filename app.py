@@ -11,6 +11,12 @@ log_queue = queue.Queue()
 running_process = None
 running_event = 0
 
+def capture_output(process):
+    global log_queue
+    for line in iter(process.stdout.readline, b''):
+        log_queue.put(line.strip())
+    process.stdout.close()
+
 def run_process():
     global running_process, running_event
     if running_event == 0:
@@ -25,10 +31,10 @@ def run_process():
         )
         running_event = 1
         running_process = process
-        for line in iter(process.stdout.readline, ''):
-            log_queue.put(line.strip())
-            # print(line.strip())
-        process.stdout.close()
+        # 添加子进程
+        thread_cap = threading.Thread(target=capture_output,args=(process,))
+        thread_cap.daemon = True
+        thread_cap.start()
         process.wait()
 
 @app.route('/')
