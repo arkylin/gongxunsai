@@ -8,6 +8,9 @@ git clone http://192.168.1.109:3000/x/gongxunsai
 ```
 pip install -r requirements.txt
 ```
+```
+sudo apt install libzbar0
+```
 ### 拷贝摄像头命令规则（可选）
 运行命令
 ```

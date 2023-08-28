@@ -298,7 +298,7 @@ def vision_left(conn):
 if __name__ == '__main__':
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     ser = serial.Serial(
-        port="COM1",
+        port="/dev/serial0",
         baudrate=115200,  # 波特率，根据实际情况修改
         timeout=1  # 超时时间，根据实际情况修改
     )
