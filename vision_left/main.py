@@ -213,29 +213,32 @@ def vision_left(conn):
 
                         # 接收到来自Block程序的数据
                         if conn.poll():
+                            frame_data = [8,0,0,0,9]
+                            print (frame_data)
+                            send_serial_data(ser,frame_data)
                             # print(conn.recv())
-                            block_data = conn.recv() # [['red_box', 113, 105]]
-                            if len(block_data) != 0:
-                                zhuantai_flag = 0
-                                # 判断最下面的物块
-                                last_values_y = [item[-1] for item in block_data]
-                                max_value_y = max(last_values_y)
-                                max_index_y = last_values_y.index(max_value_y)
-                                last_x_data = block_data[max_index_y][1]
-                                if abs(old_value_y-max_value_y) < 20 and abs(old_value_x-last_x_data) < 20:
-                                    # print(last_x_data-claw_xy[0],max_value_y-claw_xy[1])
-                                    zhuantai_flag = 1;
-                                old_value_x = last_x_data
-                                old_value_y = max_value_y
-                                zhuanpan_juli_center_x = int((last_x_data-claw_xy[0])/frame_wh[0]*255)
-                                zhuanpan_juli_center_y = int((max_value_y-claw_xy[1])/frame_wh[1]*255)
-                                if zhuanpan_juli_center_x < 0:
-                                     zhuanpan_juli_center_x += 256
-                                if zhuanpan_juli_center_y < 0:
-                                     zhuanpan_juli_center_y += 256
-                                frame_data = [8,zhuantai_flag,zhuanpan_juli_center_x,zhuanpan_juli_center_y,9]
-                                print (frame_data)
-                                send_serial_data(ser,frame_data)
+                            # block_data = conn.recv() # [['red_box', 113, 105]]
+                            # if len(block_data) != 0:
+                            #     zhuantai_flag = 0
+                            #     # 判断最下面的物块
+                            #     last_values_y = [item[-1] for item in block_data]
+                            #     max_value_y = max(last_values_y)
+                            #     max_index_y = last_values_y.index(max_value_y)
+                            #     last_x_data = block_data[max_index_y][1]
+                            #     if abs(old_value_y-max_value_y) < 20 and abs(old_value_x-last_x_data) < 20:
+                            #         # print(last_x_data-claw_xy[0],max_value_y-claw_xy[1])
+                            #         zhuantai_flag = 1;
+                            #     old_value_x = last_x_data
+                            #     old_value_y = max_value_y
+                            #     zhuanpan_juli_center_x = int((last_x_data-claw_xy[0])/frame_wh[0]*255)
+                            #     zhuanpan_juli_center_y = int((max_value_y-claw_xy[1])/frame_wh[1]*255)
+                            #     if zhuanpan_juli_center_x < 0:
+                            #          zhuanpan_juli_center_x += 256
+                            #     if zhuanpan_juli_center_y < 0:
+                            #          zhuanpan_juli_center_y += 256
+                            #     frame_data = [8,zhuantai_flag,zhuanpan_juli_center_x,zhuanpan_juli_center_y,9]
+                            #     print (frame_data)
+                            #     send_serial_data(ser,frame_data)
                         # else:
                         #     print("None")
 

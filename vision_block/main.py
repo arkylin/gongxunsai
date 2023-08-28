@@ -3,35 +3,27 @@ import cv2
 import platform
 import time
 
-import torch
-from .utils.tool import *
-from .module.detector import Detector
-
 system = platform.system()
 
-category_num = 6
-input_width = 352
-input_height = 352
-LABEL_NAMES = ["green","red","blue","green_box","red_box","blue_box"]
-weight = "vision_block/770-1.pth"
-thresh = 0.95
+# 红色范围
+lower_red = np.array([0, 100, 100])
+upper_red = np.array([10, 255, 255])
+
+# 绿色范围
+lower_green = np.array([35, 100, 100])
+upper_green = np.array([85, 255, 255])
+
+# 蓝色范围
+lower_blue = np.array([100, 100, 100])
+upper_blue = np.array([130, 255, 255])
+
 frame_wh = (400,300)
 
-def vision_block(conn):
-    # 选择推理后端  
-    device = torch.device("cpu") 
-    # 模型加载
-    # print("load weight from:%s"%weight)
-    model = Detector(category_num, True).to(device)
-    model.load_state_dict(torch.load(weight, map_location=device))
-    #sets the module in eval node
-    model.eval()
-    print("开始视觉识别")
-    
+def vision_block(conn):    
     # 初始化摄像头
     if system == 'Windows':
         # 初始化摄像头
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
     elif system == 'Linux':
         # 初始化摄像头
         cap = cv2.VideoCapture("/dev/block_video0")
@@ -44,45 +36,61 @@ def vision_block(conn):
             # start_time = time.perf_counter()
             # 读取摄像头图像
             ret, frame = cap.read()
-            send_data = []
-            # 数据预处理
-            res_img = cv2.resize(frame, (input_width, input_height), interpolation = cv2.INTER_LINEAR) 
-            img = res_img.reshape(1, input_height, input_width, 3)
-            img = torch.from_numpy(img.transpose(0, 3, 1, 2))
-            img = img.to(device).float() / 255.0
+            frame = cv2.resize(frame, frame_wh)
 
-            # 模型推理
-            # start = time.perf_counter()
-            preds = model(img)
-            # end = time.perf_counter()
-            # time = (end - start) * 1000.
-            # print("forward time:%fms"%time)
+            # 将图像转换为HSV颜色空间
+            hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-            # 特征图后处理
-            output = handle_preds(preds, device, thresh)
-            
-            H, W = frame_wh
-            scale_h, scale_w = H / input_height, W / input_width
+            # 创建黄色和灰色的掩码
+            red_mask = cv2.inRange(hsv_frame, lower_red, upper_red)
+            green_mask = cv2.inRange(hsv_frame, lower_green, upper_green)
+            blue_mask = cv2.inRange(hsv_frame, lower_blue, upper_blue)
+            mask = cv2.bitwise_or(red_mask,cv2.bitwise_or(green_mask,blue_mask))
 
-            # 绘制预测框
-            for box in output[0]:
-                # print(box)
-                # end_time = time.perf_counter()
-                # print("block" + str((end_time-start_time)*1000) + "ms")
-                box = box.tolist()
-            
-                obj_score = box[4]
-                category = LABEL_NAMES[int(box[5])]
+            # # 对掩码进行形态学操作，以去除噪声
+            kernel = np.ones((5, 5), np.uint8)
+            mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+            # cv2.imshow("Test", red_mask)
 
-                x1, y1 = int(box[0] * W), int(box[1] * H)
-                x2, y2 = int(box[2] * W), int(box[3] * H)
+            img = mask
+            # # 查找轮廓
+            contours, _ = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-                # print([category, int(obj_score*100), x1, y1, x2, y2])
-                # conn.send("123")
-                # int(obj_score*100) # 置信度
-                send_data.append([category, int((x1+x2)/2), int((y1+y2)/2)])
-            if len(send_data) !=0:
-                # time.sleep(1)
-                conn.send(send_data)
+            #初始化变量
+            if len(contours) > 0:
+                # 找到最大面积的轮廓
+                max_area = 0
+                max_contour = None
+                for contour in contours:
+                    area = cv2.contourArea(contour)
+                    if area > max_area:
+                        max_area = area
+                        max_contour = contour
+                    # print(max_area,max_contour)
+                    if isinstance(max_contour, np.ndarray) and max_area > frame_wh[0]*frame_wh[1]*0.02:
+                        # 获取面积最大轮廓的凸包
+                        hull = cv2.convexHull(max_contour)
+                        conn.send("Hello")
+
+                        # Debug
+                        # 创建一个与原始图像相同大小的空白图像
+                        # mask = np.zeros_like(frame)
+
+                        # 在空白图像上绘制最大面积轮廓
+                        # print(max_contour)
+                        # cv2.drawContours(mask, [hull], -1, (0, 255, 0), thickness=cv2.FILLED)
+
+                        # 将原始图像和掩码图像进行位运算，将最大面积区域涂色
+                        # image = cv2.bitwise_and(frame, mask)
+
+                        # cv2.imshow("Test", image)
+
+                        # 计算外接矩形
+                        # x, y, w, h = cv2.boundingRect(hull)
+                        # block_x = int(x+w/2)
+                        # block_y = int(y+h/2)
+                        # cv2.circle(frame, (block_x, block_y), 5, (0, 255, 0), -1)
+                        # # cv2.drawContours(frame, [hull], 0, (0, 255, 0), 2)
+                        # cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
     else:
         print("Block摄像头无法打开")

@@ -16,3 +16,8 @@ dx / dy
 [ERROR:0@3.260] global cap.cpp:164 open VIDEOIO(CV_IMAGES): raised OpenCV exception:
 
 OpenCV(4.8.0) /io/opencv/modules/videoio/src/cap_images.cpp:253: error: (-5:Bad argument) CAP_IMAGES: can't find starting number (in the name of file): /dev/block_video in function 'icvExtractPattern'
+
+## 4 (Sloved)
+KERNEL=="video*", ATTRS{idVendor}=="05a3", ATTRS{idProduct}=="9230", ATTR{index}=="0", MODE:="0777", SYMLINK+="left_video0"
+KERNEL=="video*", ATTRS{idVendor}=="2993", ATTRS{idProduct}=="0858", ATTR{index}=="0", MODE:="0777", SYMLINK+="block_video0"
+sudo udevadm control --reload-rules
