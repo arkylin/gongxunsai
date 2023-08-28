@@ -21,3 +21,13 @@ OpenCV(4.8.0) /io/opencv/modules/videoio/src/cap_images.cpp:253: error: (-5:Bad 
 KERNEL=="video*", ATTRS{idVendor}=="05a3", ATTRS{idProduct}=="9230", ATTR{index}=="0", MODE:="0777", SYMLINK+="left_video0"
 KERNEL=="video*", ATTRS{idVendor}=="2993", ATTRS{idProduct}=="0858", ATTR{index}=="0", MODE:="0777", SYMLINK+="block_video0"
 sudo udevadm control --reload-rules
+
+## 5 (Sloved)
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/pi/gongxunsai/vision_left/main.py", line 229, in vision_left
+    delta_block_x = int((block_data[0][1] - frame_wh[0]/2)/frame_wh[0]*127)
+TypeError: unsupported operand type(s) for -: 'tuple' and 'float'
