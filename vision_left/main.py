@@ -226,8 +226,8 @@ def vision_left(conn):
                             block_data = conn.recv()
                             if len(block_data) > 0:
                                 frame_data[5] = 1
-                                delta_block_x = int((block_data[0][1] - frame_wh[0]/2)/frame_wh[0]*255)
-                                delta_block_y = int((block_data[0][2] - frame_wh[1]/2)/frame_wh[1]*255)
+                                delta_block_x = int((block_data[0][1] - frame_wh[0]/2)/frame_wh[0]*127)
+                                delta_block_y = int((block_data[0][2] - frame_wh[1]/2)/frame_wh[1]*127)
                                 if delta_block_x < 0:
                                     delta_block_x = 255 + delta_block_x
                                 if delta_block_y < 0:
