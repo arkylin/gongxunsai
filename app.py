@@ -9,11 +9,11 @@ import os
 app = Flask(__name__)
 log_queue = queue.Queue()
 running_process = None
-stop_event = threading.Event()
+running_event = 0
 
 def run_process():
-    global running_process
-    while not stop_event.is_set():
+    global running_process, running_event
+    if running_event == 0:
         cmd = "python main.py"
         process = subprocess.Popen(
             cmd,
@@ -23,6 +23,7 @@ def run_process():
             text=True,
             bufsize=1,
         )
+        running_event = 1
         running_process = process
         for line in iter(process.stdout.readline, ''):
             log_queue.put(line.strip())
@@ -35,25 +36,32 @@ def index():
 
 @app.route('/start')
 def start():
-    global stop_event
-    stop_event.clear()
-    thread = threading.Thread(target=run_process)
-    thread.daemon = True
-    thread.start()
-    return jsonify({'message': 'Process started.'})
+    global running_event
+    if running_event == 0:
+        thread = threading.Thread(target=run_process)
+        thread.daemon = True
+        thread.start()
+        return jsonify({'message': 'Process started.'})
+    else:
+        stop()
+        start()
 
 @app.route('/stop')
 def stop():
-    global stop_event, running_process
-    stop_event.set()
-    if running_process:
-        parent = psutil.Process(running_process.pid)
-        for child in parent.children(recursive=True):
-            child.terminate()
-        parent.terminate()
-        parent.wait()
-        running_process = None
-    return jsonify({'message': 'Process stopped.'})
+    global running_process, running_event
+    if running_event == 1:
+        if os.path.exists("main.pid"):
+            with open("main.pid", "r") as file:
+                pid = file.read()
+                file.close()
+            parent = psutil.Process(int(pid))
+            for child in parent.children(recursive=True):
+                child.terminate()
+            parent.terminate()
+            parent.wait()
+            running_process = None
+            running_event = 0
+        return jsonify({'message': 'Process stopped.'})
 
 @app.route('/clear')
 def clear():

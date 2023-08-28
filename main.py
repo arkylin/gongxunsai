@@ -7,7 +7,7 @@ import vision_left.main
 import vision_block.main
 
 if __name__ == '__main__':
-    with open('app.pid', 'w') as pid_file:
+    with open('main.pid', 'w') as pid_file:
         pid_file.write(str(os.getpid()))
 
     # 创建多个进程，并将它们绑定到指定的CPU核心
