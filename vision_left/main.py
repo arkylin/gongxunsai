@@ -296,7 +296,18 @@ def vision_left(conn):
         print("Left摄像头无法打开")
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    # 创建串口对象
+    if system == 'Windows':
+        port='COM1'
+        # 初始化摄像头
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    elif system == 'Linux':
+        # port='/dev/ttyUSB0'
+        # 初始化摄像头
+        cap = cv2.VideoCapture("/dev/left_video0")
+    else:
+        print(system)
+    cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
     ser = serial.Serial(
         port="/dev/serial0",
         baudrate=115200,  # 波特率，根据实际情况修改
