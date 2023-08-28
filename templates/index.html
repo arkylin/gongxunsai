@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工训赛小车控制端</title>
+    <script src="https://code.bdstatic.com/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+</head>
+<body>
+    <h1>工训赛小车控制端</h1>
+    <button id="start">启动</button>
+    <button id="stop">停止</button>
+    <button id="clear">清除日志</button>
+    <button id="clear_qrcode">清除二维码结果</button>
+    <pre id="log" style="border: 1px solid black; height: 300px; overflow: auto;"></pre>
+
+    <script>
+        function updateLog() {
+            $.get('/get_log', function(data) {
+                $('#log').append(data.log.join('\n') + '\n');
+                $('#log').scrollTop($('#log')[0].scrollHeight);
+            });
+        }
+
+        function clearLog() {
+            $.get('/clear', function(data) {
+                $('#log').empty();
+            });
+        }
+
+        function clearQrcode() {
+            $.get('/clear_qrcode', function(data) {
+            });
+        }
+
+        $('#start').click(function() {
+            $.get('/start', function(data) {
+                $('#log').empty();
+                updateLog();
+            });
+        });
+
+        $('#stop').click(function() {
+            $.get('/stop', function(data) {
+                updateLog();
+            });
+        });
+
+        $('#clear').click(function() {
+            clearLog();
+        });
+
+        $('#clear_qrcode').click(function() {
+            clearQrcode();
+        });
+
+        setInterval(updateLog, 1000);
+    </script>
+</body>
+</html>

@@ -4,6 +4,10 @@
 ```
 git clone http://192.168.1.109:3000/x/gongxunsai
 ```
+### 切换软件源
+```
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+```
 ### pip安装依赖
 ```
 pip install -r requirements.txt
