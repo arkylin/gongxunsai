@@ -4,6 +4,7 @@ import time
 import math
 import serial
 import platform
+from pyzbar import pyzbar
 
 system = platform.system()
 
@@ -75,6 +76,28 @@ def send_serial_data(ser,frame_data):
     # 将数据发送到串口
     ser.write(hex_frame)
 
+def decode_qr_code(image, iswin=False):
+    # 转换为灰度图像
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # 使用pyzbar解码二维码
+    data = []
+    barcodes = pyzbar.decode(gray)
+    # print(barcodes)
+
+    # 遍历解码结果
+    for barcode in barcodes:
+        # 提取二维码数据
+        data.append(barcode.data.decode("utf-8"))
+
+        if iswin:
+            # 绘制边界框
+            (x, y, w, h) = barcode.rect
+            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    if iswin:
+        # 显示图像
+        cv2.imshow("Image", image)
+    return data
 
 def vision_left(conn):
     #初始化变量
@@ -224,10 +247,10 @@ def vision_left(conn):
                         # 接收到来自Block程序的数据
                         # if conn.poll():
                         block_data = conn.recv()
-                        if len(block_data) > 0:
+                        if len(block_data) > 0 and block_data[0][0] != "null":
                             frame_data[5] = 1
-                            delta_block_x = int(((block_data[0][1] - (frame_wh[0]/2))/frame_wh[0])*127)
-                            delta_block_y = int(((block_data[0][2] - (frame_wh[1]/2))/frame_wh[1])*127)
+                            delta_block_x = int((block_data[0][1] - frame_wh[0]/2)/frame_wh[0]*127)
+                            delta_block_y = int((block_data[0][2] - frame_wh[1]/2)/frame_wh[1]*127)
                             if delta_block_x < 0:
                                 delta_block_x = 255 + delta_block_x
                             if delta_block_y < 0:
