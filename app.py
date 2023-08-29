@@ -26,7 +26,7 @@ def run_process():
         running_event = 1
         running_process = process
         # 添加子进程
-        for line in iter(process.stdout.readline, b''):
+        for line in iter(process.stdout.readline, ''):
             log_queue.put(line.strip())
         process.stdout.close()
         process.wait()
