@@ -11,14 +11,8 @@ log_queue = queue.Queue()
 running_process = None
 running_event = 0
 
-def capture_output(process):
-    global log_queue
-    for line in iter(process.stdout.readline, b''):
-        log_queue.put(line.strip())
-    process.stdout.close()
-
 def run_process():
-    global running_process, running_event
+    global running_process, running_event, log_queue
     if running_event == 0:
         cmd = "python main.py"
         process = subprocess.Popen(
@@ -32,9 +26,9 @@ def run_process():
         running_event = 1
         running_process = process
         # 添加子进程
-        thread_cap = threading.Thread(target=capture_output,args=(process,))
-        thread_cap.daemon = True
-        thread_cap.start()
+        for line in iter(process.stdout.readline, b''):
+            log_queue.put(line.strip())
+        process.stdout.close()
         process.wait()
 
 @app.route('/')
@@ -44,7 +38,6 @@ def index():
 @app.route('/start')
 def start():
     global running_event
-    log_queue.queue.clear()
     if running_event == 0:
         thread = threading.Thread(target=run_process)
         thread.daemon = True
