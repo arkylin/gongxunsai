@@ -291,7 +291,7 @@ def vision_left(conn):
                         if len(block_data) > 0:
                             max_y = max(block_data, key=lambda x: x[2])
                             max_y_index = block_data.index(max_y)
-                            frame_data[5] = 1
+                            frame_data[5] = block_data[max_y_index][0]
                             delta_block_x = int((block_data[max_y_index][1] - frame_wh[0]/2)/frame_wh[0]*127)
                             delta_block_y = int((block_data[max_y_index][2] - frame_wh[1]/2)/frame_wh[1]*127)
                             if delta_block_x < 0:

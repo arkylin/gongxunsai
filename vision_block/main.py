@@ -78,11 +78,11 @@ def vision_block(conn):
                         # 计算凸包区域的平均颜色
                         mean_color = cv2.mean(hsv_frame, mask=hull_mask)[:3]
                         if check_color_range(mean_color, lower_red, upper_red):
-                            one_block_data.append("red")
+                            one_block_data.append(1)
                         elif check_color_range(mean_color, lower_green, upper_green):
-                            one_block_data.append("green")
+                            one_block_data.append(2)
                         elif check_color_range(mean_color, lower_blue, upper_blue):
-                            one_block_data.append("blue")
+                            one_block_data.append(3)
                         # else:
                         #     print(mean_color, flush=True)
                         #     one_block_data.append("null")
