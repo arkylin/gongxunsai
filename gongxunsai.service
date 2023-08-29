@@ -4,6 +4,8 @@ After=network.target
 
 [Service]
 ExecStart=/usr/bin/python3 /home/pi/gongxunsai/app.py
+User=pi
+Group=pi
 Restart=always
 RestartSec=3
 

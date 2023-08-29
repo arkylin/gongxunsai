@@ -11,6 +11,7 @@
     <button id="start">启动</button>
     <button id="stop">停止</button>
     <button id="clear">清除日志</button>
+    <button id="create_qrcode">伪造二维码结果</button>
     <button id="clear_qrcode">清除二维码结果</button>
     <pre id="log" style="border: 1px solid black; height: 300px; overflow: auto;"></pre>
 
@@ -33,6 +34,11 @@
             });
         }
 
+        function createQrcode() {
+            $.get('/create_qrcode', function(data) {
+            });
+        }
+
         $('#start').click(function() {
             $.get('/start', function(data) {
                 $('#log').empty();
@@ -52,6 +58,10 @@
 
         $('#clear_qrcode').click(function() {
             clearQrcode();
+        });
+
+        $('#create_qrcode').click(function() {
+            createQrcode();
         });
 
         setInterval(updateLog, 2000);

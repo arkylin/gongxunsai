@@ -91,11 +91,24 @@ def clear_qrcode():
         print("文件不存在")
     return jsonify({'message': 'Qrcode cleared.'})
 
+@app.route('/create_qrcode')
+def create_qrcode():
+    # 检查文件是否存在
+    if os.path.exists("qrcode.txt"):
+        pass
+    else:
+        with open("qrcode.txt", "w") as file:
+            file.write("123+321")
+    return jsonify({'message': 'Qrcode created.'})
+
 @app.route('/get_log')
 def get_log():
     log_lines = []
-    while not log_queue.empty():
-        log_lines.append(log_queue.get_nowait())
+    try:
+        while not log_queue.empty():
+            log_lines.append(log_queue.get_nowait())
+    except queue.Empty:
+        pass  # 队列为空，不做任何操作
     return jsonify({'log': log_lines})
 
 if __name__ == '__main__':

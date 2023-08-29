@@ -170,7 +170,7 @@ def vision_left(conn):
 
             if system == 'Linux':
                 if os.path.exists(qrcode_data):
-                    print("识别到二维码", flush=True)
+                    # print("识别到二维码", flush=True)
                     pass
                 else:
                     # print("正在识别二维码")

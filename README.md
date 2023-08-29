@@ -4,6 +4,10 @@
 ```
 git clone http://192.168.1.109:3000/x/gongxunsai
 ```
+### 安装扫描二维码依赖
+```
+sudo apt install libzbar0
+```
 ### 切换软件源
 ```
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
@@ -12,8 +16,11 @@ pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 pip install -r requirements.txt
 ```
+### 设置开机自启动程序
 ```
-sudo apt install libzbar0
+sudo cp gongxunsai.service /etc/systemd/system/
+sudo systemctl start gongxunsai.service
+sudo systemctl enable gongxunsai.service
 ```
 ### 拷贝摄像头命令规则（可选）
 运行命令
