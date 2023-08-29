@@ -4,17 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工训赛小车控制端</title>
-    <script src="https://code.bdstatic.com/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <!-- Link to Bootstrap CSS -->
+    <link href="https://cdn.staticfile.org/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-    <h1>工训赛小车控制端</h1>
-    <button id="start">启动</button>
-    <button id="stop">停止</button>
-    <button id="clear">清除日志</button>
-    <button id="create_qrcode">伪造二维码结果</button>
-    <button id="clear_qrcode">清除二维码结果</button>
-    <pre id="log" style="border: 1px solid black; height: 300px; overflow: auto;"></pre>
+    <div class="container mt-4">
+        <h1>工训赛小车控制端</h1>
+        <div class="mb-3">
+            <div class="btn-group" role="group" aria-label="控制选项">
+                <button id="start" class="btn btn-primary">启动</button>
+                <button id="stop" class="btn btn-danger">停止</button>
+                <button id="clear" class="btn btn-secondary">清除日志</button>
+                <button id="create_qrcode" class="btn btn-success">伪造二维码结果</button>
+                <button id="clear_qrcode" class="btn btn-warning">清除二维码结果</button>
+            </div>
+        </div>
+        <pre id="log" class="border p-2" style="height: 300px; overflow: auto;"></pre>
+    </div>
 
+    <!-- Link to Bootstrap JS (Optional, but needed for certain Bootstrap features) -->
+    <script src="https://cdn.staticfile.org/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
     <script>
         function updateLog() {
             $.get('/get_log', function(data) {
