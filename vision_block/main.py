@@ -103,7 +103,8 @@ def vision_block(conn):
                             circle_center = (int(circle_x), int(circle_y))
                             circle_radius = int(circle_radius)
                             cv2.circle(frame, circle_center, circle_radius, (255, 255, 255), 2)  # 绘制圆形框
-                    if len(one_block_data) > 0 :
+                    print(one_block_data)
+                    if len(one_block_data) == 3 :
                         block_data.append(one_block_data)
             # print(block_data)
             # if len(block_data) > 0:

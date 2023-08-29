@@ -22,6 +22,10 @@ sudo cp gongxunsai.service /etc/systemd/system/
 sudo systemctl start gongxunsai.service
 sudo systemctl enable gongxunsai.service
 ```
+### 修正工训赛文件
+sudo cp gongxunsai.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl restart gongxunsai.service
 ### 拷贝摄像头命令规则（可选）
 运行命令
 ```
