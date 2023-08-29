@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工训赛小车控制端</title>
+    <!-- Link to Bootstrap CSS -->
+    <link href="https://cdn.staticfile.org/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>工训赛小车控制端</h1>
+        <div class="container text-center">
+            <div class="row">
+              <div class="col-sm-5 col-md-6">
+                <button id="start" class="btn btn-primary me-2">启动</button>
+                <button id="stop" class="btn btn-danger me-2">停止</button>
+              </div>
+              <div class="col-sm-5 offset-sm-2 col-md-6 offset-md-0">
+                <button id="create_qrcode" class="btn btn-success me-2">伪造二维码结果</button>
+                <button id="clear_qrcode" class="btn btn-warning">清除二维码结果</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6 col-md-5 col-lg-6">.col-sm-6 .col-md-5 .col-lg-6</div>
+              <div class="col-sm-6 col-md-5 offset-md-2 col-lg-6 offset-lg-0">.col-sm-6 .col-md-5 .offset-md-2 .col-lg-6 .offset-lg-0</div>
+            </div>
+          </div>
+        <div class="container text-center">
+            <div class="row">
+              <div class="col align-self-center">
+                
+              </div>
+              <div class="col align-self-center">
+                
+              </div>
+              <div class="col align-self-center">
+                <button id="clear" class="btn btn-secondary me-2">清除日志</button>
+              </div>
+            </div>
+          </div>
+        <pre id="log" class="border p-2" style="height: 300px; overflow: auto;"></pre>
+    </div>
+
+    <!-- Link to Bootstrap JS (Optional, but needed for certain Bootstrap features) -->
+    <script src="https://cdn.staticfile.org/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateLog() {
+            $.get('/get_log', function(data) {
+                $('#log').append(data.log.join('\n') + '\n');
+                $('#log').scrollTop($('#log')[0].scrollHeight);
+            });
+        }
+
+        function clearLog() {
+            $.get('/clear', function(data) {
+                $('#log').empty();
+            });
+        }
+
+        function clearQrcode() {
+            $.get('/clear_qrcode', function(data) {
+            });
+        }
+
+        function createQrcode() {
+            $.get('/create_qrcode', function(data) {
+            });
+        }
+
+        $('#start').click(function() {
+            $.get('/start', function(data) {
+                $('#log').empty();
+                updateLog();
+            });
+        });
+
+        $('#stop').click(function() {
+            $.get('/stop', function(data) {
+                updateLog();
+            });
+        });
+
+        $('#clear').click(function() {
+            clearLog();
+        });
+
+        $('#clear_qrcode').click(function() {
+            clearQrcode();
+        });
+
+        $('#create_qrcode').click(function() {
+            createQrcode();
+        });
+
+        setInterval(updateLog, 2000);
+    </script>
+</body>
+</html>

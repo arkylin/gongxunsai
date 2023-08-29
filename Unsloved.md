@@ -37,3 +37,9 @@ TypeError: unsupported operand type(s) for -: 'tuple' and 'float'
 
 ## 6
 帮我编写一个python程序，使用flask创建一个网页，点击开始按钮实现运行“python main.py”（这个程序是一直循环运行的不会结束），并将这个循环运行的程序的输出（日志）显示在网页上（要求日志显示在一个固定的框里面不要出来），具有实时刷新的功能，刷新的时候保留原有的日志只刷新新的行。点击结束按钮需要停止运行程序，并且清空显示的日志，还有一个按钮可以直接清除日志。
+
+## 7 (Solved)
+for line in iter(process.stdout.readline, 'b'):
+            log_queue.put(line.strip())
+for line in iter(process.stdout.readline, ''):
+            log_queue.put(line.strip())

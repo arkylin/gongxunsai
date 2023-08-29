@@ -83,8 +83,8 @@ def vision_block(conn):
                             one_block_data.append("green")
                         elif check_color_range(mean_color, lower_blue, upper_blue):
                             one_block_data.append("blue")
-                        else:
-                            print(mean_color, flush=True)
+                        # else:
+                        #     print(mean_color, flush=True)
                         #     one_block_data.append("null")
                         #     one_block_data.append(mean_color)
 
