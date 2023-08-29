@@ -32,11 +32,11 @@ def vision_block(conn):
         # 初始化摄像头
         cap = cv2.VideoCapture("/dev/block_video0")
     else:
-        print(system)
+        print(system, flush=True)
         
     cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
     if cap.isOpened():
-        print('Video Block启动成功！')
+        print('Video Block启动成功！', flush=True)
         while True:
             # start_time = time.perf_counter()
             # 读取摄像头图像
@@ -108,14 +108,14 @@ def vision_block(conn):
             if system == "Linux":
                 conn.send(block_data)
             else:
-                print(block_data)
+                print(block_data, flush=True)
             if system == "Windows":
                 cv2.imshow("Test", frame)
                 # 按下Esc键退出
                 if cv2.waitKey(1) == 27:
                     break
     else:
-        print("Block摄像头无法打开")
+        print("Block摄像头无法打开", flush=True)
 
 if __name__ == '__main__':
     vision_block(False)

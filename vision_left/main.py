@@ -73,7 +73,7 @@ def guaijiaoshibie(jiaodiancanshu):
 def send_serial_data(ser,frame_data):
     # 发送串口数据
     # 将帧数据转换为16进制字符串
-    print("串口已发送：", frame_data[:])
+    print("串口已发送：", frame_data[:], flush=True)
     hex_frame = bytes(frame_data)
     # print(hex_frame)
     # 将数据发送到串口
@@ -137,10 +137,10 @@ def vision_left(conn):
         # 初始化摄像头
         cap = cv2.VideoCapture("/dev/left_video0")
     else:
-        print(system)
+        print(system, flush=True)
     cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
     if cap.isOpened():
-        print('Video Left启动成功！')
+        print('Video Left启动成功！', flush=True)
         try:
             ser = serial.Serial(
                 port=port,
@@ -148,10 +148,10 @@ def vision_left(conn):
                 timeout=1  # 超时时间，根据实际情况修改
             )
             serial_available = 1
-            print("检测到STM32串口")
+            print("检测到STM32串口", flush=True)
         except:
             serial_available = 0
-            print("没有检测到STM32串口")
+            print("没有检测到STM32串口", flush=True)
         try:
             ser0 = serial.Serial(
                 port="/dev/serial0",
@@ -159,10 +159,10 @@ def vision_left(conn):
                 timeout=1  # 超时时间，根据实际情况修改
             )
             serial0_available = 1
-            print("检测到屏幕串口")
+            print("检测到屏幕串口", flush=True)
         except:
             serial0_available = 0
-            print("没有检测到屏幕串口")
+            print("没有检测到屏幕串口", flush=True)
 
         while True:
             # start_time = time.perf_counter()
@@ -171,10 +171,10 @@ def vision_left(conn):
             frame = cv2.resize(frame, frame_wh)
 
             if os.path.exists(qrcode_data):
-                print("识别到二维码")
+                print("识别到二维码", flush=True)
                 pass
             else:
-                print("正在识别二维码")
+                # print("正在识别二维码")
                 update_screen_by_qrcode(frame,ser0,1)
                 continue
 
@@ -306,11 +306,11 @@ def vision_left(conn):
                         if serial_available == 1:
                             send_serial_data(ser,frame_data)
                         else:
-                            print(frame_data[:])
+                            print(frame_data[:], flush=True)
                         # end_time = time.perf_counter()
                         # print("Left: " + str((end_time-start_time)*1000) + "ms")
     else:
-        print("Left摄像头无法打开")
+        print("Left摄像头无法打开", flush=True)
 
 if __name__ == '__main__':
     # 创建串口对象
@@ -323,7 +323,7 @@ if __name__ == '__main__':
         # 初始化摄像头
         cap = cv2.VideoCapture("/dev/left_video0")
     else:
-        print(system)
+        print(system, flush=True)
     cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
     ser = serial.Serial(
         port="/dev/serial0",
