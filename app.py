@@ -44,6 +44,7 @@ def index():
 @app.route('/start')
 def start():
     global running_event
+    log_queue.queue.clear()
     if running_event == 0:
         thread = threading.Thread(target=run_process)
         thread.daemon = True
