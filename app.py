@@ -39,9 +39,7 @@ def index():
 def start():
     global running_event
     if running_event == 0:
-        thread = threading.Thread(target=run_process)
-        thread.daemon = True
-        thread.start()
+        run_process()
         return jsonify({'message': 'Process started.'})
     else:
         stop()
