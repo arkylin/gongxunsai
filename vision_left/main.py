@@ -286,20 +286,20 @@ def vision_left(conn):
                         frame_data.append(0)
                         frame_data.append(0)
                         # 接收到来自Block程序的数据
-                        if conn.poll():
-                            block_data = conn.recv()
-                            if len(block_data) > 0:
-                                max_y = max(block_data, key=lambda x: x[2])
-                                max_y_index = block_data.index(max_y)
-                                frame_data[5] = 1
-                                delta_block_x = int((block_data[max_y_index][1] - frame_wh[0]/2)/frame_wh[0]*127)
-                                delta_block_y = int((block_data[max_y_index][2] - frame_wh[1]/2)/frame_wh[1]*127)
-                                if delta_block_x < 0:
-                                    delta_block_x = 255 + delta_block_x
-                                if delta_block_y < 0:
-                                    delta_block_y = 255 + delta_block_y
-                                frame_data[6] = delta_block_x
-                                frame_data[7] = delta_block_y
+                        # if conn.poll():
+                        block_data = conn.recv()
+                        if len(block_data) > 0:
+                            max_y = max(block_data, key=lambda x: x[2])
+                            max_y_index = block_data.index(max_y)
+                            frame_data[5] = 1
+                            delta_block_x = int((block_data[max_y_index][1] - frame_wh[0]/2)/frame_wh[0]*127)
+                            delta_block_y = int((block_data[max_y_index][2] - frame_wh[1]/2)/frame_wh[1]*127)
+                            if delta_block_x < 0:
+                                delta_block_x = 255 + delta_block_x
+                            if delta_block_y < 0:
+                                delta_block_y = 255 + delta_block_y
+                            frame_data[6] = delta_block_x
+                            frame_data[7] = delta_block_y
 
                         # 发送串口数据
                         frame_data.append(13)
