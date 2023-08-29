@@ -63,10 +63,8 @@ def guaijiaoshibie(jiaodiancanshu):
         center = center.astype(int)  # 将坐标转换为整数
         if center[0][0] < int(frame_wh[0]/2) and center[0][1] < int(frame_wh[1]/2):
             GUAIJIAO = 1
-            # print("aaaaaaaaaaaaaaaaaaaaaaaa")
         else:
             GUAIJIAO = 0
-            # print("bbbbbbbbbbbbbbbbbbbbbbbb")
     else:
         GUAIJIAO = 0
 
@@ -170,13 +168,14 @@ def vision_left(conn):
             ret, frame = cap.read()
             frame = cv2.resize(frame, frame_wh)
 
-            if os.path.exists(qrcode_data):
-                print("识别到二维码", flush=True)
-                pass
-            else:
-                # print("正在识别二维码")
-                update_screen_by_qrcode(frame,ser0,1)
-                continue
+            if system == 'Linux':
+                if os.path.exists(qrcode_data):
+                    print("识别到二维码", flush=True)
+                    pass
+                else:
+                    # print("正在识别二维码")
+                    update_screen_by_qrcode(frame,ser0,1)
+                    continue
 
             # 将图像转换为HSV颜色空间
             hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -290,9 +289,11 @@ def vision_left(conn):
                         # if conn.poll():
                         block_data = conn.recv()
                         if len(block_data) > 0 and block_data[0][0] != "null":
+                            max_y = max(block_data, key=lambda x: x[2])
+                            max_y_index = block_data.index(max_y)
                             frame_data[5] = 1
-                            delta_block_x = int((block_data[0][1] - frame_wh[0]/2)/frame_wh[0]*127)
-                            delta_block_y = int((block_data[0][2] - frame_wh[1]/2)/frame_wh[1]*127)
+                            delta_block_x = int((block_data[max_y_index][1] - frame_wh[0]/2)/frame_wh[0]*127)
+                            delta_block_y = int((block_data[max_y_index][2] - frame_wh[1]/2)/frame_wh[1]*127)
                             if delta_block_x < 0:
                                 delta_block_x = 255 + delta_block_x
                             if delta_block_y < 0:

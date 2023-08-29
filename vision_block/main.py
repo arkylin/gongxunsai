@@ -105,15 +105,15 @@ def vision_block(conn):
                     if len(one_block_data) > 0 :
                         block_data.append(one_block_data)
             # print(block_data)
-            if system == "Linux":
-                conn.send(block_data)
-            else:
-                print(block_data, flush=True)
-            if system == "Windows":
-                cv2.imshow("Test", frame)
-                # 按下Esc键退出
-                if cv2.waitKey(1) == 27:
-                    break
+            if len(block_data) > 0:
+                if system == "Linux":
+                    conn.send(block_data)
+                elif system == "Windows":
+                    # print(block_data, flush=True)
+                    cv2.imshow("Test", frame)
+                    # 按下Esc键退出
+                    if cv2.waitKey(1) == 27:
+                        break
     else:
         print("Block摄像头无法打开", flush=True)
 
