@@ -27,7 +27,7 @@ def vision_block(conn):
     # 初始化摄像头
     if system == 'Windows':
         # 初始化摄像头
-        cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     elif system == 'Linux':
         # 初始化摄像头
         cap = cv2.VideoCapture("/dev/block_video0")
@@ -84,8 +84,9 @@ def vision_block(conn):
                         elif check_color_range(mean_color, lower_blue, upper_blue):
                             one_block_data.append("blue")
                         else:
-                            one_block_data.append("null")
-                            one_block_data.append(mean_color)
+                            print(mean_color, flush=True)
+                        #     one_block_data.append("null")
+                        #     one_block_data.append(mean_color)
 
                         # 计算外接矩形
                         x, y, w, h = cv2.boundingRect(hull)
@@ -109,7 +110,7 @@ def vision_block(conn):
                 if system == "Linux":
                     conn.send(block_data)
                 elif system == "Windows":
-                    # print(block_data, flush=True)
+                    print(block_data, flush=True)
                     cv2.imshow("Test", frame)
                     # 按下Esc键退出
                     if cv2.waitKey(1) == 27:

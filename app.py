@@ -37,7 +37,8 @@ def index():
 
 @app.route('/start')
 def start():
-    global running_event
+    global running_event, log_queue
+    log_queue.queue.clear()
     if running_event == 0:
         run_process()
         return jsonify({'message': 'Process started.'})
@@ -47,7 +48,7 @@ def start():
 
 @app.route('/stop')
 def stop():
-    global running_process, running_event
+    global running_process, running_event, log_queue
     if running_event == 1:
         if os.path.exists("main.pid"):
             with open("main.pid", "r") as file:
@@ -60,8 +61,12 @@ def stop():
             parent.wait()
             running_process = None
             running_event = 0
-        return jsonify({'message': 'Process stopped.'})
-    return jsonify({'message': 'Process not run.'})
+            log_queue.queue.clear()
+            return jsonify({'message': 'Process stopped.'})
+        else:
+            return jsonify({'message': 'Process stop failed.'})
+    else:
+        return jsonify({'message': 'Process not run.'})
 
 @app.route('/clear')
 def clear():
@@ -91,16 +96,14 @@ def create_qrcode():
     else:
         with open("qrcode.txt", "w") as file:
             file.write("123+321")
+            file.close()
     return jsonify({'message': 'Qrcode created.'})
 
 @app.route('/get_log')
 def get_log():
     log_lines = []
-    try:
-        while not log_queue.empty():
-            log_lines.append(log_queue.get_nowait())
-    except queue.Empty:
-        pass  # 队列为空，不做任何操作
+    while not log_queue.empty():
+        log_lines.append(log_queue.get_nowait())
     return jsonify({'log': log_lines})
 
 if __name__ == '__main__':

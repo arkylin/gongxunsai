@@ -288,7 +288,7 @@ def vision_left(conn):
                         # 接收到来自Block程序的数据
                         # if conn.poll():
                         block_data = conn.recv()
-                        if len(block_data) > 0 and block_data[0][0] != "null":
+                        if len(block_data) > 0:
                             max_y = max(block_data, key=lambda x: x[2])
                             max_y_index = block_data.index(max_y)
                             frame_data[5] = 1
