@@ -11,35 +11,15 @@
 <body>
     <div class="container mt-4">
         <h1>工训赛小车控制端</h1>
-        <div class="container text-center">
-            <div class="row">
-              <div class="col-sm-5 col-md-6">
-                <button id="start" class="btn btn-primary me-2">启动</button>
-                <button id="stop" class="btn btn-danger me-2">停止</button>
-              </div>
-              <div class="col-sm-5 offset-sm-2 col-md-6 offset-md-0">
-                <button id="create_qrcode" class="btn btn-success me-2">伪造二维码结果</button>
+        <div class="mb-3">
+            <div class="btn-group" role="group" aria-label="控制选项">
+                <button id="start" class="btn btn-primary">启动</button>
+                <button id="stop" class="btn btn-danger">停止</button>
+                <button id="clear" class="btn btn-secondary">清除日志</button>
+                <button id="create_qrcode" class="btn btn-success">伪造二维码结果</button>
                 <button id="clear_qrcode" class="btn btn-warning">清除二维码结果</button>
-              </div>
             </div>
-            <div class="row">
-              <div class="col-sm-6 col-md-5 col-lg-6">.col-sm-6 .col-md-5 .col-lg-6</div>
-              <div class="col-sm-6 col-md-5 offset-md-2 col-lg-6 offset-lg-0">.col-sm-6 .col-md-5 .offset-md-2 .col-lg-6 .offset-lg-0</div>
-            </div>
-          </div>
-        <div class="container text-center">
-            <div class="row">
-              <div class="col align-self-center">
-                
-              </div>
-              <div class="col align-self-center">
-                
-              </div>
-              <div class="col align-self-center">
-                <button id="clear" class="btn btn-secondary me-2">清除日志</button>
-              </div>
-            </div>
-          </div>
+        </div>
         <pre id="log" class="border p-2" style="height: 300px; overflow: auto;"></pre>
     </div>
 
