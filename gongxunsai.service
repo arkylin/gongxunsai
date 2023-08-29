@@ -1,11 +1,11 @@
 [Unit]
-Description=My App Service
+Description=Gongxun Xiao Car
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /home/pi/gongxunsai/app.py
 User=pi
 Group=pi
+ExecStart=/usr/bin/python3 /home/pi/gongxunsai/app.py
 Restart=always
 RestartSec=3
 
