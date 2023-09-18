@@ -43,3 +43,5 @@ for line in iter(process.stdout.readline, 'b'):
             log_queue.put(line.strip())
 for line in iter(process.stdout.readline, ''):
             log_queue.put(line.strip())
+
+ImportError: libGL.so.1: cannot open shared object file: No such file or directory

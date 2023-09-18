@@ -117,6 +117,27 @@ def update_screen_by_qrcode(image,ser="",action=1):
             file.close()
             return data
 
+def convert_to_hex_te(lst):
+    hex_str = '0x{:02x}'.format(int(''.join(map(str, lst))))
+    return hex_str
+    # [1,6] 0x10
+
+def convert_to_hex(lst):
+    hex_str = '0x' + ''.join([hex(num)[2:] for num in lst])
+    return hex_str
+    # [1,6] 0x16
+
+def parsing_scanned_qrcode_data(data):
+    if "+" in data and len(data) == 7 :
+        data = data.split("+")
+        datalist = [123,132,213,231,312,321]
+        return_data = []
+        return_data.append(datalist.index(int(data[0]))+1)
+        return_data.append(datalist.index(int(data[1]))+1)
+        return return_data
+    else:
+        return False
+
 def vision_left(conn):
     #初始化变量
     old_value_x = 0
@@ -174,8 +195,11 @@ def vision_left(conn):
                     pass
                 else:
                     # print("正在识别二维码")
-                    update_screen_by_qrcode(frame,ser0,1)
+                    qrcode_number = update_screen_by_qrcode(frame,ser0,1)
                     continue
+            
+            # if qrcode_number != '':
+            #     send_serial_data(ser0,[0,convert_to_hex(parsing_scanned_qrcode_data("123+123")),13])
 
             # 将图像转换为HSV颜色空间
             hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -302,6 +326,9 @@ def vision_left(conn):
                             frame_data[7] = delta_block_y
 
                         # 发送串口数据
+                        frame_data.append(0)
+                        if qrcode_number != '' and len(qrcode_number) == 7:
+                            frame_data[8] = convert_to_hex(parsing_scanned_qrcode_data(qrcode_number))
                         frame_data.append(13)
                         # print(frame_data[:])
                         if serial_available == 1:
@@ -314,23 +341,24 @@ def vision_left(conn):
         print("Left摄像头无法打开", flush=True)
 
 if __name__ == '__main__':
+    print(convert_to_hex(parsing_scanned_qrcode_data("123+123")))
     # 创建串口对象
-    if system == 'Windows':
-        port='COM1'
-        # 初始化摄像头
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-    elif system == 'Linux':
-        # port='/dev/ttyUSB0'
-        # 初始化摄像头
-        cap = cv2.VideoCapture("/dev/left_video0")
-    else:
-        print(system, flush=True)
-    cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
-    ser = serial.Serial(
-        port="/dev/serial0",
-        baudrate=115200,  # 波特率，根据实际情况修改
-        timeout=1  # 超时时间，根据实际情况修改
-    )
-    while True:
-        ret, frame = cap.read()
-        update_screen_by_qrcode(frame,ser,1)
+    # if system == 'Windows':
+    #     port='COM1'
+    #     # 初始化摄像头
+    #     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    # elif system == 'Linux':
+    #     # port='/dev/ttyUSB0'
+    #     # 初始化摄像头
+    #     cap = cv2.VideoCapture("/dev/left_video0")
+    # else:
+    #     print(system, flush=True)
+    # cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
+    # ser = serial.Serial(
+    #     port="/dev/serial0",
+    #     baudrate=115200,  # 波特率，根据实际情况修改
+    #     timeout=1  # 超时时间，根据实际情况修改
+    # )
+    # while True:
+    #     ret, frame = cap.read()
+    #     update_screen_by_qrcode(frame,ser,1)
