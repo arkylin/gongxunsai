@@ -115,7 +115,7 @@ def update_screen_by_qrcode(image,ser="",action=1):
         with open(qrcode_data, "r") as file:
             data = file.read()
             file.close()
-            return data
+    return data
 
 def convert_to_hex_te(lst):
     hex_str = '0x{:02x}'.format(int(''.join(map(str, lst))))
