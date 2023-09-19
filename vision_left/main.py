@@ -115,7 +115,7 @@ def update_screen_by_qrcode(image,ser="",action=1):
         with open(qrcode_data, "r") as file:
             data = file.read()
             file.close()
-    return data
+    return data[0]
 
 def convert_to_hex_te(lst):
     hex_str = '0x{:02x}'.format(int(''.join(map(str, lst))))
@@ -329,6 +329,7 @@ def vision_left(conn):
                         frame_data.append(0)
                         if qrcode_number != '' and len(qrcode_number) == 7:
                             frame_data[8] = convert_to_hex(parsing_scanned_qrcode_data(qrcode_number))
+                            # 为0BUG
                         frame_data.append(13)
                         # print(frame_data[:])
                         if serial_available == 1:
