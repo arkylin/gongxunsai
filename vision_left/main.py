@@ -128,6 +128,12 @@ def convert_to_hex(lst):
     return hex_str
     # [1,6] 0x16
 
+def convert_to_need_numbers(lst):
+    if len(lst) == 2:
+        return lst[0]+lst[1]
+    else:
+        return 0
+
 def parsing_scanned_qrcode_data(data):
     if "+" in data and len(data) == 7 :
         data = data.split("+")
@@ -329,7 +335,7 @@ def vision_left(conn):
                         # 发送串口数据
                         frame_data.append(0)
                         if qrcode_number != '' and len(qrcode_number) == 7:
-                            frame_data[8] = convert_to_hex(parsing_scanned_qrcode_data(qrcode_number))
+                            frame_data[8] = convert_to_need_numbers(parsing_scanned_qrcode_data(qrcode_number))
                             # 为0BUG
                         frame_data.append(13)
                         # print(frame_data[:])
