@@ -353,7 +353,7 @@ def vision_left(conn):
                                     item_block_circle_data = int(block_box_circle[i][j]/frame_wh[1])*255
                                 else:
                                     item_block_circle_data = block_box_circle[i][j]
-                                frame_data.append(block_box_circle[i][j])
+                                frame_data.append(item_block_circle_data)
                         frame_data.append(13)
                         # print(frame_data[:])
                         if serial_available == 1:
