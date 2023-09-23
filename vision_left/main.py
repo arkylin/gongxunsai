@@ -75,7 +75,6 @@ def guaijiaoshibie(jiaodiancanshu):
         GUAIJIAO = 0
 
 def send_serial_data(ser,frame_data):
-    global last_send_time, send_interval
      # 获取当前时间
     current_time = time.time()
 
