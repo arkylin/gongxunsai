@@ -31,12 +31,6 @@ R = 0.1  # 观测噪声方差
 B = np.asarray([1])  # 控制矩阵
 EYE = np.asarray([1])
 
-# 设置发送间隔为 50 毫秒
-send_interval = 0.05
-
-# 记录上次发送时间
-last_send_time = time.time()
-
 def kalman(val):
     global X, P, Q, F, H, R, B, EYE
     X_ = F * X
@@ -75,21 +69,13 @@ def guaijiaoshibie(jiaodiancanshu):
         GUAIJIAO = 0
 
 def send_serial_data(ser,frame_data):
-    global last_send_time, send_interval
-     # 获取当前时间
-    current_time = time.time()
-
-    # 检查是否达到发送间隔
-    if current_time - last_send_time >= send_interval:
-        # 发送串口数据
-        # 将帧数据转换为16进制字符串
-        print("串口已发送：", frame_data[:], flush=True)
-        hex_frame = bytes(frame_data)
-        # print(hex_frame)
-        # 将数据发送到串口
-        ser.write(hex_frame)
-        # 更新上次发送时间
-        last_send_time = current_time
+    # 发送串口数据
+    # 将帧数据转换为16进制字符串
+    print("串口已发送：", frame_data[:], flush=True)
+    hex_frame = bytes(frame_data)
+    # print(hex_frame)
+    # 将数据发送到串口
+    ser.write(hex_frame)
 
 
 def decode_qr_code(image, iswin=False):
