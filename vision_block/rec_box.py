@@ -17,18 +17,6 @@ upper_green = np.array([85, 255, 255])
 lower_blue = np.array([60, 35, 100])
 upper_blue = np.array([130, 255, 255])
 
-# 红色范围
-lower_red1 = np.array([0, 50, 100])
-upper_red1 = np.array([40, 255, 255])
-
-# 绿色范围
-lower_green1 = np.array([40, 50, 100])
-upper_green1 = np.array([85, 255, 255])
-
-# 蓝色范围
-lower_blue1 = np.array([60, 35, 100])
-upper_blue1 = np.array([130, 255, 255])
-
 frame_wh = (400,300)
 
 def box(hsv_frame):
