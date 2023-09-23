@@ -20,14 +20,14 @@ if __name__ == '__main__':
     # os.sched_setaffinity(p.pid,[i]) # 绑定到第i个CPU核心
     p_angle.daemon = True
     p_angle.start()
-    psutil.Process(p_angle.pid).cpu_affinity([0])
+    psutil.Process(p_angle.pid).cpu_affinity([0,1])
     processes.append(p_angle)
 
     p_block = multiprocessing.Process(target=vision_block.main.vision_block,args=(conn2,conn4,))
     # os.sched_setaffinity(p.pid,[i]) # 绑定到第i个CPU核心
     p_block.daemon = True
     p_block.start()
-    psutil.Process(p_block.pid).cpu_affinity([1])
+    psutil.Process(p_block.pid).cpu_affinity([2,3])
     processes.append(p_block)
 
     # 等待所有进程完成
