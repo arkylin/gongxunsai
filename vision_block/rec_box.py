@@ -44,7 +44,7 @@ def box(hsv_frame):
                 circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
                 cv2.circle(circle_mask, (x, y), r, (255, 255, 255), -1)
 
-                # cv2.imshow("Test",circle_mask)
+                cv2.imshow("Test",circle_mask)
 
                 mean_color = cv2.mean(hsv_frame, mask=circle_mask)[:3]
                 # print(mean_color)
@@ -55,8 +55,8 @@ def box(hsv_frame):
                 elif check_color_range(mean_color, lower_blue, upper_blue):
                     circle_color = 3
                 circles_data.append([circle_color,x,y])
-    return circles_data
     # print(circles_data)
+    return circles_data
 
 
 
@@ -64,7 +64,7 @@ def check_color_range(color, lower_bound, upper_bound):
     return np.all(np.logical_and(color >= lower_bound, color <= upper_bound))
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(1,cv2.CAP_DSHOW)
+    cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
     while True:
         # 读取摄像头画面
         ret, frame = cap.read()
