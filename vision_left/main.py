@@ -341,9 +341,9 @@ def vision_left(conn1,conn2):
                         for i in range(3):
                             for j in range(3):
                                 if j == 1:
-                                    item_block_circle_data = int(circles_data[i][j]/frame_wh[0]*255)
+                                    item_block_circle_data = int(other_circles_data[i][j]/frame_wh[0]*255)
                                 elif j == 2:
-                                    item_block_circle_data = int(circles_data[i][j]/frame_wh[1]*255)
+                                    item_block_circle_data = int(other_circles_data[i][j]/frame_wh[1]*255)
                                 else:
                                     item_block_circle_data = other_circles_data[i][j]
                                 frame_data.append(item_block_circle_data)
