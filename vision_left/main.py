@@ -339,7 +339,7 @@ def vision_left(conn):
                             frame_data[8] = convert_to_need_numbers(parsing_scanned_qrcode_data(qrcode_number))
                             # 为0BUG
                         block_box_circle = box(hsv_frame)
-                        print(block_box_circle)
+                        print(block_box_circle, flush=True)
                         if len(block_box_circle) !=3:
                             while(len(block_box_circle) < 3):
                                 block_box_circle.append([0,0,0])
