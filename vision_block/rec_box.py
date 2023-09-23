@@ -4,6 +4,7 @@ import platform
 import time
 
 system = platform.system()
+
 # 红色范围
 lower_red = np.array([0, 100, 100])
 upper_red = np.array([20, 255, 255])
@@ -16,16 +17,27 @@ upper_green = np.array([85, 255, 255])
 lower_blue = np.array([60, 35, 100])
 upper_blue = np.array([130, 255, 255])
 
+# 红色范围
+lower_red1 = np.array([0, 50, 100])
+upper_red1 = np.array([40, 255, 255])
+
+# 绿色范围
+lower_green1 = np.array([40, 50, 100])
+upper_green1 = np.array([85, 255, 255])
+
+# 蓝色范围
+lower_blue1 = np.array([60, 35, 100])
+upper_blue1 = np.array([130, 255, 255])
+
 frame_wh = (400,300)
 
 def box(hsv_frame):
-    # 创建黄色和灰色的掩码
     red_mask = cv2.inRange(hsv_frame, lower_red, upper_red)
     green_mask = cv2.inRange(hsv_frame, lower_green, upper_green)
     blue_mask = cv2.inRange(hsv_frame, lower_blue, upper_blue)
     mask = cv2.bitwise_or(red_mask,cv2.bitwise_or(green_mask,blue_mask))
-    result = cv2.bitwise_and(hsv_frame, hsv_frame, mask=mask)
-    result = cv2.cvtColor(result,cv2.COLOR_HSV2RGB)
+    origin_result = cv2.bitwise_and(hsv_frame, hsv_frame, mask=mask)
+    result = cv2.cvtColor(origin_result,cv2.COLOR_HSV2RGB)
     result = cv2.cvtColor(result,cv2.COLOR_RGB2GRAY)
     kernel = np.ones((5, 5), np.uint8)
     result = cv2.morphologyEx(result, cv2.MORPH_GRADIENT, kernel)
@@ -45,11 +57,22 @@ def box(hsv_frame):
             if y >= 50 and y<=156:
                 circle_color = 0
                 circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
+                pure_circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
                 cv2.circle(circle_mask, (x, y), r, (255, 255, 255), -1)
+                cv2.circle(circle_mask, (x, y), int(r/3*2), (0, 0, 0), -1)
 
-                # cv2.imshow("Test",circle_mask)
+                pure_circle = cv2.bitwise_and(origin_result,origin_result,mask=circle_mask)
+                circle_gray = cv2.cvtColor(pure_circle, cv2.COLOR_HSV2BGR)
+                circle_gray = cv2.cvtColor(circle_gray, cv2.COLOR_BGR2GRAY)
+                # 对灰度图像进行阈值化
+                _, heibai_img = cv2.threshold(circle_gray, 127, 255, cv2.THRESH_BINARY)
+                
+                if system == 'Windows':
+                    # cv2.imshow("Test",cv2.bitwise_and(hsv_frame,hsv_frame,mask=circle_mask))
+                    # cv2.imshow("Test2",cv2.cvtColor(pure_circle_mask,cv2.COLOR_HSV2BGR))
+                    cv2.imshow("Test2",heibai_img)
 
-                mean_color = cv2.mean(hsv_frame, mask=circle_mask)[:3]
+                mean_color = cv2.mean(hsv_frame, mask=heibai_img)[:3]
                 # print(mean_color)
                 if check_color_range(mean_color, lower_red, upper_red):
                     circle_color = 1
@@ -64,10 +87,8 @@ def box(hsv_frame):
             circles_data.append([0,0,0])
         while(len(circles_data) > 3):
             circles_data.pop()
-    circles_data = sorted(circles_data, key=lambda x: x[0])
+    circles_data = sorted(circles_data, key=lambda x: x[1])
     return circles_data
-
-
 
 def check_color_range(color, lower_bound, upper_bound):
     return np.all(np.logical_and(color >= lower_bound, color <= upper_bound))
@@ -86,8 +107,10 @@ if __name__ == '__main__':
         # 读取摄像头画面
         ret, frame = cap.read()
         frame = cv2.resize(frame, frame_wh)
+        # cv2.imshow("T",frame)
         # 转换为HSV颜色空间
         hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        # cv2.imshow("T",hsv_frame)
         print(box(hsv_frame))
         # 按下ESC键退出循环
         if cv2.waitKey(1) == 27:
