@@ -72,7 +72,11 @@ def box(hsv_frame):
     # print(circles_data)
     if len(circles_data) !=3:
         while(len(circles_data) < 3):
+<<<<<<< HEAD
             circles_data.append([255,400,300])
+=======
+            circles_data.append([0,0,0])
+>>>>>>> parent of 90fdc3b (修正错误)
         while(len(circles_data) > 3):
             circles_data.pop()
     circles_data = sorted(circles_data, key=lambda x: x[1])
