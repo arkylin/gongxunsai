@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
+import platform
+import time
 
+system = platform.system()
 # 红色范围
 lower_red = np.array([0, 100, 100])
 upper_red = np.array([20, 255, 255])
@@ -64,7 +67,15 @@ def check_color_range(color, lower_bound, upper_bound):
     return np.all(np.logical_and(color >= lower_bound, color <= upper_bound))
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+    # 初始化摄像头
+    if system == 'Windows':
+        # 初始化摄像头
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    elif system == 'Linux':
+        # 初始化摄像头
+        cap = cv2.VideoCapture("/dev/block_video0")
+    else:
+        print(system, flush=True)
     while True:
         # 读取摄像头画面
         ret, frame = cap.read()
