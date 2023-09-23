@@ -20,7 +20,7 @@ upper_blue = np.array([130, 255, 255])
 frame_wh = (400,300)
 
 # 初始化摄像头
-cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(1,cv2.CAP_DSHOW)
 
 # 创建窗口和滑块
 # cv2.namedWindow('image')

@@ -6,6 +6,7 @@ import math
 import serial
 import platform
 from pyzbar import pyzbar
+from vision_block.rec_box import box
 
 system = platform.system()
 
@@ -337,6 +338,15 @@ def vision_left(conn):
                         if qrcode_number != '' and len(qrcode_number) == 7:
                             frame_data[8] = convert_to_need_numbers(parsing_scanned_qrcode_data(qrcode_number))
                             # 为0BUG
+                        block_box_circle = box(hsv_frame)
+                        if len(block_box_circle) !=3:
+                            while(len(block_box_circle) < 3):
+                                block_box_circle.append([0,0,0])
+                            while(len(block_box_circle) > 3):
+                                block_box_circle.pop()
+                        for i in range(3):
+                            for j in range(3):
+                                frame_data.append(block_box_circle[i][j])
                         frame_data.append(13)
                         # print(frame_data[:])
                         if serial_available == 1:
