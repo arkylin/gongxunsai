@@ -55,8 +55,6 @@ def box(hsv_frame):
                 elif check_color_range(mean_color, lower_blue, upper_blue):
                     circle_color = 3
                 circles_data.append([circle_color,x,y])
-        
-    circles_data = sorted(circles_data, key=lambda x: x[0])
     return circles_data
     # print(circles_data)
 

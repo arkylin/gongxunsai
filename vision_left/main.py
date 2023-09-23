@@ -344,8 +344,15 @@ def vision_left(conn):
                                 block_box_circle.append([0,0,0])
                             while(len(block_box_circle) > 3):
                                 block_box_circle.pop()
+                        block_box_circle = sorted(block_box_circle, key=lambda x: x[0])
                         for i in range(3):
                             for j in range(3):
+                                if j == 1:
+                                    item_block_circle_data = int(block_box_circle[i][j]/frame_wh[0])*255
+                                elif j == 2:
+                                    item_block_circle_data = int(block_box_circle[i][j]/frame_wh[1])*255
+                                else:
+                                    item_block_circle_data = block_box_circle[i][j]
                                 frame_data.append(block_box_circle[i][j])
                         frame_data.append(13)
                         # print(frame_data[:])
