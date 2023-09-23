@@ -44,7 +44,7 @@ def box(hsv_frame):
                 circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
                 cv2.circle(circle_mask, (x, y), r, (255, 255, 255), -1)
 
-                cv2.imshow("Test",circle_mask)
+                # cv2.imshow("Test",circle_mask)
 
                 mean_color = cv2.mean(hsv_frame, mask=circle_mask)[:3]
                 # print(mean_color)
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         frame = cv2.resize(frame, frame_wh)
         # 转换为HSV颜色空间
         hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        box(hsv_frame)
+        print(box(hsv_frame))
         # 按下ESC键退出循环
         if cv2.waitKey(1) == 27:
             break
