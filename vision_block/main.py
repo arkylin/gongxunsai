@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import platform
 import time
+from .rec_box import box
 
 system = platform.system()
 
@@ -23,7 +24,7 @@ frame_wh = (400,300)
 def check_color_range(color, lower_bound, upper_bound):
     return np.all(np.logical_and(color >= lower_bound, color <= upper_bound))
 
-def vision_block(conn):    
+def vision_block(conn1,conn2):    
     # 初始化摄像头
     if system == 'Windows':
         # 初始化摄像头
@@ -108,8 +109,10 @@ def vision_block(conn):
                         block_data.append(one_block_data)
             # print(block_data)
             # if len(block_data) > 0:
+            other_circles_data = box(hsv_frame)
             if system == "Linux":
-                conn.send(block_data)
+                conn1.send(block_data)
+                conn2.send(other_circles_data)
             elif system == "Windows":
                 print(block_data, flush=True)
                 cv2.imshow("Test", frame)

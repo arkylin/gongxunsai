@@ -59,6 +59,12 @@ def box(hsv_frame):
                     circle_color = 3
                 circles_data.append([circle_color,x,y])
     # print(circles_data)
+    if len(circles_data) !=3:
+        while(len(circles_data) < 3):
+            circles_data.append([0,0,0])
+        while(len(circles_data) > 3):
+            circles_data.pop()
+    circles_data = sorted(circles_data, key=lambda x: x[0])
     return circles_data
 
 

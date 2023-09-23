@@ -6,7 +6,6 @@ import math
 import serial
 import platform
 from pyzbar import pyzbar
-from vision_block.rec_box import box
 
 system = platform.system()
 
@@ -146,7 +145,7 @@ def parsing_scanned_qrcode_data(data):
     else:
         return False
 
-def vision_left(conn):
+def vision_left(conn1,conn2):
     #初始化变量
     old_value_x = 0
     old_value_y = 0
@@ -318,8 +317,8 @@ def vision_left(conn):
                         frame_data.append(0)
                         frame_data.append(0)
                         # 接收到来自Block程序的数据
-                        # if conn.poll():
-                        block_data = conn.recv()
+                        # if conn1.poll():
+                        block_data = conn1.recv()
                         if len(block_data) > 0:
                             max_y = max(block_data, key=lambda x: x[2])
                             max_y_index = block_data.index(max_y)
@@ -338,22 +337,15 @@ def vision_left(conn):
                         if qrcode_number != '' and len(qrcode_number) == 7:
                             frame_data[8] = convert_to_need_numbers(parsing_scanned_qrcode_data(qrcode_number))
                             # 为0BUG
-                        block_box_circle = box(hsv_frame)
-                        print(block_box_circle, flush=True)
-                        if len(block_box_circle) !=3:
-                            while(len(block_box_circle) < 3):
-                                block_box_circle.append([0,0,0])
-                            while(len(block_box_circle) > 3):
-                                block_box_circle.pop()
-                        block_box_circle = sorted(block_box_circle, key=lambda x: x[0])
+                        other_circles_data = conn2.recv()
                         for i in range(3):
                             for j in range(3):
                                 if j == 1:
-                                    item_block_circle_data = int(block_box_circle[i][j]/frame_wh[0]*255)
+                                    item_block_circle_data = int(circles_data[i][j]/frame_wh[0]*255)
                                 elif j == 2:
-                                    item_block_circle_data = int(block_box_circle[i][j]/frame_wh[1]*255)
+                                    item_block_circle_data = int(circles_data[i][j]/frame_wh[1]*255)
                                 else:
-                                    item_block_circle_data = block_box_circle[i][j]
+                                    item_block_circle_data = other_circles_data[i][j]
                                 frame_data.append(item_block_circle_data)
                         frame_data.append(13)
                         # print(frame_data[:])

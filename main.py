@@ -14,15 +14,16 @@ if __name__ == '__main__':
     processes = []
 
     conn1, conn2 = multiprocessing.Pipe()
+    conn3, conn4 = multiprocessing.Pipe()
 
-    p_angle = multiprocessing.Process(target=vision_left.main.vision_left,args=(conn1,))
+    p_angle = multiprocessing.Process(target=vision_left.main.vision_left,args=(conn1,conn3,))
     # os.sched_setaffinity(p.pid,[i]) # 绑定到第i个CPU核心
     p_angle.daemon = True
     p_angle.start()
     psutil.Process(p_angle.pid).cpu_affinity([0])
     processes.append(p_angle)
 
-    p_block = multiprocessing.Process(target=vision_block.main.vision_block,args=(conn2,))
+    p_block = multiprocessing.Process(target=vision_block.main.vision_block,args=(conn2,conn4,))
     # os.sched_setaffinity(p.pid,[i]) # 绑定到第i个CPU核心
     p_block.daemon = True
     p_block.start()
