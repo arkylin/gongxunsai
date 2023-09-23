@@ -45,3 +45,25 @@ for line in iter(process.stdout.readline, ''):
             log_queue.put(line.strip())
 
 ImportError: libGL.so.1: cannot open shared object file: No such file or directory
+
+## 8 
+Process Process-1:
+Traceback (most recent call last):
+  File "/home/pi/.local/lib/python3.9/site-packages/serial/serialposix.py", line 621, in write
+    n = os.write(self.fd, d)
+OSError: [Errno 5] Input/output error
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/pi/gongxunsai/vision_left/main.py", line 353, in vision_left
+    send_serial_data(ser,frame_data)
+  File "/home/pi/gongxunsai/vision_left/main.py", line 78, in send_serial_data
+    ser.write(hex_frame)
+  File "/home/pi/.local/lib/python3.9/site-packages/serial/serialposix.py", line 655, in write
+    raise SerialException('write failed: {}'.format(e))
+serial.serialutil.SerialException: write failed: [Errno 5] Input/output error
