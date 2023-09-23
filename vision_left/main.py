@@ -89,9 +89,6 @@ def send_serial_data(ser,frame_data):
         ser.write(hex_frame)
         # 更新上次发送时间
         last_send_time = current_time
-    else:
-        time.sleep(send_interval - current_time + last_send_time)
-        last_send_time = current_time
 
 
 def decode_qr_code(image, iswin=False):
