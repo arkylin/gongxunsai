@@ -313,7 +313,7 @@ def vision_left(conn1,conn2):
                         # 拐角识别
                         # guaijiaoshibie(approx)
                         circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
-                        cv2.circle(circle_mask, (int(frame_wh[0]/2),int(frame_wh[1]/4)), 50, (255, 255, 255), -1)
+                        cv2.circle(circle_mask, (int(frame_wh[0]/2),int(frame_wh[1]/6)), 40, (255, 255, 255), -1)
                         mean_color = cv2.mean(yellow_mask, mask=circle_mask)[:3][0]
                         guaijiao_check = 0
                         if mean_color == 0:
