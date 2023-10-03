@@ -54,7 +54,7 @@ def box(hsv_frame):
 
         # 遍历检测到的圆并绘制
         for (x, y, r) in circles:
-            if y >= 50 and y<=156:
+            if y >= 80 and y<=180:
                 circle_color = 0
                 circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
                 pure_circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)

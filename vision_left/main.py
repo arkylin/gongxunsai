@@ -9,7 +9,7 @@ from pyzbar import pyzbar
 
 system = platform.system()
 
-# 定义黄色和灰色的颜色范围
+# 定义黄色的颜色范围
 lower_yellow = np.array([20, 70, 0])
 upper_yellow = np.array([40, 255, 255])
 
@@ -306,13 +306,20 @@ def vision_left(conn1,conn2):
                         else:
                             hex_representation = format((1 << 16) + multiplied_value, '04X')
 
-                        # 拐角识别
-                        guaijiaoshibie(approx)
-
                         frame_data.append(int(hex_representation[:2],16))
                         frame_data.append(int(hex_representation[2:],16))
                         frame_data.append(dheight)
-                        frame_data.append(GUAIJIAO)
+
+                        # 拐角识别
+                        # guaijiaoshibie(approx)
+                        circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
+                        cv2.circle(circle_mask, (int(frame_wh[0]/2),int(frame_wh[1]/4)), 50, (255, 255, 255), -1)
+                        mean_color = cv2.mean(yellow_mask, mask=circle_mask)[:3][0]
+                        guaijiao_check = 0
+                        if mean_color == 0:
+                            guaijiao_check = 1
+                        # frame_data.append(GUAIJIAO)
+                        frame_data.append(guaijiao_check)
 
                         frame_data.append(0)
                         frame_data.append(0)
