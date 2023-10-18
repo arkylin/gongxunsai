@@ -56,7 +56,7 @@ def vision_block(conn1,conn2):
             # # 对掩码进行形态学操作，以去除噪声
             kernel = np.ones((5, 5), np.uint8)
             mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-            cv2.imshow("TT", mask)
+            # cv2.imshow("TT", mask)
 
             img = mask
             # # 查找轮廓
