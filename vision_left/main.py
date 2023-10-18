@@ -190,6 +190,9 @@ def vision_left(conn1,conn2):
         except:
             serial0_available = 0
             print("没有检测到屏幕串口", flush=True)
+        
+        ser0.write(("t2.txt=\""+ "Get Ready!" +"\"").encode())
+        ser0.write(bytes.fromhex('ff ff ff'))
 
         while True:
             # start_time = time.perf_counter()
@@ -198,8 +201,6 @@ def vision_left(conn1,conn2):
             frame = cv2.resize(frame, frame_wh)
 
             if system == 'Linux':
-                ser0.write(("t2.txt=\""+ "Get Ready!" +"\"").encode())
-                ser0.write(bytes.fromhex('ff ff ff')) 
                 if os.path.exists(qrcode_data):
                     # print("识别到二维码", flush=True)
                     pass
