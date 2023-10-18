@@ -3,9 +3,9 @@ import cv2
 import numpy as np
 import platform
 import time
-from .rec_box import box
-
 system = platform.system()
+if system == "Linux":
+    from .rec_box import box
 
 # 红色范围
 lower_red = np.array([0, 100, 100])
@@ -109,8 +109,8 @@ def vision_block(conn1,conn2):
                         block_data.append(one_block_data)
             # print(block_data)
             # if len(block_data) > 0:
-            other_circles_data = box(hsv_frame)
             if system == "Linux":
+                other_circles_data = box(hsv_frame)
                 conn1.send(block_data)
                 conn2.send(other_circles_data)
             elif system == "Windows":
@@ -123,4 +123,4 @@ def vision_block(conn1,conn2):
         print("Block摄像头无法打开", flush=True)
 
 if __name__ == '__main__':
-    vision_block(False)
+    vision_block(False,False)

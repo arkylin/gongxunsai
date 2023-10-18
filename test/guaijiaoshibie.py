@@ -24,13 +24,13 @@ while True:
     kernel = np.ones((5, 5), np.uint8)
     yellow_mask = cv2.morphologyEx(yellow_mask, cv2.MORPH_OPEN, kernel)
     circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
-    cv2.circle(circle_mask, (int(frame_wh[0]/2),int(frame_wh[1]/6)), 40, (255, 255, 255), -1)
+    cv2.circle(circle_mask, (int(frame_wh[0]/2-120),int(frame_wh[1]/6)), 40, (255, 255, 255), -1)
     mean_color = cv2.mean(yellow_mask, mask=circle_mask)[:3][0]
     print(int(mean_color))
     # gray_frame = cv2.cvtColor(frame,cv2.COLOR_RGB2GRAY)
     # ret, binary = cv2.threshold(gray_frame, 60, 255, cv2.THRESH_BINARY)
 
-    cv2.circle(yellow_mask, (int(frame_wh[0]/2),int(frame_wh[1]/6)), 40, (255, 255, 255), -1)
+    cv2.circle(yellow_mask, (int(frame_wh[0]/2-120),int(frame_wh[1]/6)), 40, (255, 255, 255), -1)
     cv2.imshow('t', yellow_mask)
 
     # 按下ESC键退出循环
