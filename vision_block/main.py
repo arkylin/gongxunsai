@@ -9,14 +9,14 @@ if system == "Linux":
 
 # 红色范围
 lower_red = np.array([0, 100, 100])
-upper_red = np.array([10, 255, 255])
+upper_red = np.array([12, 255, 255])
 
 # 绿色范围
-lower_green = np.array([35, 100, 100])
+lower_green = np.array([40, 100, 100])
 upper_green = np.array([85, 255, 255])
 
 # 蓝色范围
-lower_blue = np.array([100, 100, 100])
+lower_blue = np.array([100, 60, 100])
 upper_blue = np.array([130, 255, 255])
 
 frame_wh = (400,300)
@@ -56,11 +56,12 @@ def vision_block(conn1,conn2):
             # # 对掩码进行形态学操作，以去除噪声
             kernel = np.ones((5, 5), np.uint8)
             mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-            # cv2.imshow("Test", red_mask)
+            cv2.imshow("TT", mask)
 
             img = mask
             # # 查找轮廓
             contours, _ = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            # print(contours)
 
             block_data = []
 
@@ -69,30 +70,38 @@ def vision_block(conn1,conn2):
                 for contour in contours:
                     one_block_data = []
                     area = cv2.contourArea(contour)
-                    if isinstance(contour, np.ndarray) and area > frame_wh[0]*frame_wh[1]*0.02:
+                    # print(area)
+                    if isinstance(contour, np.ndarray) and area > frame_wh[0]*frame_wh[1]*0.01:
                         # 获取面积最大轮廓的凸包
                         hull = cv2.convexHull(contour)
                         # 创建一个掩膜图像，用于提取凸包区域
                         hull_mask = np.zeros(frame.shape[:2], dtype=np.uint8)
                         cv2.drawContours(hull_mask, [hull], 0, 255, -1)
+                        # cv2.imshow("TT",hull_mask)
+
+                        # 计算外接矩形
+                        x, y, w, h = cv2.boundingRect(hull)
+                        block_x = int(x+w/2)
+                        block_y = int(y+h/2)
 
                         # 计算凸包区域的平均颜色
-                        mean_color = cv2.mean(hsv_frame, mask=hull_mask)[:3]
-                        if check_color_range(mean_color, lower_red, upper_red):
+                        color_hull_mask = np.zeros(frame.shape[:2], dtype=np.uint8)
+                        cv2.circle(color_hull_mask, (block_x, block_y), 25, (255, 255, 255), -1)
+                        # cv2.imshow("TT",color_hull_mask)
+                        mean_color = cv2.mean(hsv_frame, mask=color_hull_mask)[:3]
+                        mean_color_1 = [int(mean_color[0]),int(mean_color[1]),int(mean_color[2])]
+                        # print(mean_color)
+                        if check_color_range(mean_color_1, lower_red, upper_red):
                             one_block_data.append(1)
-                        elif check_color_range(mean_color, lower_green, upper_green):
+                        elif check_color_range(mean_color_1, lower_green, upper_green):
                             one_block_data.append(2)
-                        elif check_color_range(mean_color, lower_blue, upper_blue):
+                        elif check_color_range(mean_color_1, lower_blue, upper_blue):
                             one_block_data.append(3)
                         # else:
                         #     print(mean_color, flush=True)
                         #     one_block_data.append("null")
                         #     one_block_data.append(mean_color)
 
-                        # 计算外接矩形
-                        x, y, w, h = cv2.boundingRect(hull)
-                        block_x = int(x+w/2)
-                        block_y = int(y+h/2)
                         one_block_data.append(block_x)
                         one_block_data.append(block_y)
                         if system == "Windows":
