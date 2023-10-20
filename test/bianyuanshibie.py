@@ -146,6 +146,34 @@ def parsing_scanned_qrcode_data(data):
     else:
         return False
 
+def illum(img):
+    # img = cv2.imread("test2.jpg")
+    # img = img[532:768, 0:512]
+    img_bw = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    thresh = cv2.threshold(img_bw, 180, 255, 0)[1]
+    cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+    img_zero = np.zeros(img.shape, dtype=np.uint8)
+    # img[thresh == 255] = 150
+    for cnt in cnts:
+        x, y, w, h = cv2.boundingRect(cnt)
+        img_zero[y:y+h, x:x+w] = 255
+    # cv2.imshow("mask", mask)
+    mask = img_zero
+    # cv2.imshow("mask", mask)
+    result = cv2.illuminationChange(img, mask, alpha=0, beta=2)
+    # cv2.imshow("result", result)
+    # cv2.waitKey(0)
+    return result
+
+# def ill(img):
+#     gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#     _, thresholded_image = cv2.threshold(gray_image, 200, 255, cv2.THRESH_BINARY)
+#     kernel = np.ones((5, 5), np.uint8)
+#     morphed_image = cv2.morphologyEx(thresholded_image, cv2.MORPH_CLOSE, kernel)
+#     filtered_image = cv2.multiply(img, np.uint8(morphed_image / 255))
+#     cv2.imshow("TTT",morphed_image)
+#     return morphed_image
+
 def vision_left(conn1,conn2):
     #初始化变量
     old_value_x = 0
@@ -200,6 +228,15 @@ def vision_left(conn1,conn2):
             ret, frame = cap.read()
             frame = cv2.resize(frame, frame_wh)
 
+            # gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # _, thresholded_image = cv2.threshold(gray_image, 180, 255, cv2.THRESH_BINARY)
+            # kernel1 = np.ones((7, 7), np.uint8)
+            # morphed_image = cv2.morphologyEx(thresholded_image, cv2.MORPH_CLOSE, kernel1)
+            # morphed_image = cv2.morphologyEx(morphed_image, cv2.MORPH_OPEN, kernel1)
+            # # frame = ill(frame)
+            # # frame = illum(frame)
+            # cv2.imshow("TTT",morphed_image)
+
             if system == 'Linux':
                 if os.path.exists(qrcode_data):
                     # print("识别到二维码", flush=True)
@@ -215,12 +252,19 @@ def vision_left(conn1,conn2):
             # 将图像转换为HSV颜色空间
             hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
+            # hsv_frame = cv2.GaussianBlur(hsv_frame, (13,13), 0)
+            # hsv_frame = cv2.medianBlur(hsv_frame, 13)
+
             # 创建黄色和灰色的掩码
             yellow_mask = cv2.inRange(hsv_frame, lower_yellow, upper_yellow)
+            # yellow_mask = cv2.bitwise_or(morphed_image,yellow_mask,yellow_mask)
+            # cv2.imshow("T1T",hsv_frame)
 
             # 对掩码进行形态学操作，以去除噪声
-            kernel = np.ones((5, 5), np.uint8)
+            kernel = np.ones((21, 21), np.uint8)
+            # kernel = np.ones((5, 5), np.uint8)
             yellow_mask = cv2.morphologyEx(yellow_mask, cv2.MORPH_OPEN, kernel)
+            cv2.imshow("T1T",yellow_mask)
 
             img = yellow_mask
             # 查找轮廓
@@ -280,6 +324,11 @@ def vision_left(conn1,conn2):
                         # 计算直线的斜率
                         dx = bottom_points[1][0][0] - bottom_points[0][0][0]
                         dy = bottom_points[1][0][1] - bottom_points[0][0][1]
+
+
+                        cv2.line(image, (bottom_points[0][0][0], bottom_points[0][0][1]), (bottom_points[1][0][0], bottom_points[1][0][1]), (0, 0, 255), 2)  # 绘制直线
+                        cv2.imshow("Imag",image)
+
                         # Todo dx非零
                         if dx != 0:
                             slope = dy / dx
@@ -366,6 +415,9 @@ def vision_left(conn1,conn2):
                             print(frame_data[:], flush=True)
                         # end_time = time.perf_counter()
                         # print("Left: " + str((end_time-start_time)*1000) + "ms")
+            # 按下ESC键退出循环
+            if cv2.waitKey(1) == 27:
+                break
     else:
         print("Left摄像头无法打开", flush=True)
 

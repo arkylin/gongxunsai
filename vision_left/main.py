@@ -219,7 +219,7 @@ def vision_left(conn1,conn2):
             yellow_mask = cv2.inRange(hsv_frame, lower_yellow, upper_yellow)
 
             # 对掩码进行形态学操作，以去除噪声
-            kernel = np.ones((5, 5), np.uint8)
+            kernel = np.ones((21, 21), np.uint8)
             yellow_mask = cv2.morphologyEx(yellow_mask, cv2.MORPH_OPEN, kernel)
 
             img = yellow_mask
