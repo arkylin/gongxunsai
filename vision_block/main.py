@@ -28,7 +28,7 @@ def vision_block(conn1,conn2):
     # 初始化摄像头
     if system == 'Windows':
         # 初始化摄像头
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(1)
     elif system == 'Linux':
         # 初始化摄像头
         cap = cv2.VideoCapture("/dev/block_video0")

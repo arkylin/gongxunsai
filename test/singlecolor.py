@@ -10,12 +10,13 @@ cv2.createTrackbar('Lower Hue', 'image', 0, 179, nothing)
 cv2.createTrackbar('Lower Saturation', 'image', 100, 255, nothing)
 cv2.createTrackbar('Lower Value', 'image', 100, 255, nothing)
 
-cv2.createTrackbar('Upper Hue', 'image', 10, 179, nothing)
+cv2.createTrackbar('Upper Hue', 'image', 12, 179, nothing)
 cv2.createTrackbar('Upper Saturation', 'image', 255, 255, nothing)
 cv2.createTrackbar('Upper Value', 'image', 255, 255, nothing)
 
 # 初始化摄像头
 cap = cv2.VideoCapture(1)
+cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
 
 while True:
     # 读取摄像头画面

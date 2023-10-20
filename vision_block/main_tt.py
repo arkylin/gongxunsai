@@ -11,6 +11,10 @@ if system == "Linux":
 lower_red = np.array([0, 100, 100])
 upper_red = np.array([12, 255, 255])
 
+# 红色范围
+lower_red_1 = np.array([155, 100, 100])
+upper_red_1 = np.array([180, 255, 255])
+
 # 绿色范围
 lower_green = np.array([40, 100, 100])
 upper_green = np.array([85, 255, 255])
@@ -28,7 +32,7 @@ def vision_block(conn1,conn2):
     # 初始化摄像头
     if system == 'Windows':
         # 初始化摄像头
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(1)
     elif system == 'Linux':
         # 初始化摄像头
         cap = cv2.VideoCapture("/dev/block_video0")
@@ -49,7 +53,9 @@ def vision_block(conn1,conn2):
 
             # 创建黄色和灰色的掩码
             red_mask = cv2.inRange(hsv_frame, lower_red, upper_red)
-            red_mask = cv2.morphologyEx(red_mask, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
+            red_mask_1 = cv2.inRange(hsv_frame, lower_red_1, upper_red_1)
+            red_mask = cv2.bitwise_or(red_mask,red_mask_1)
+            # red_mask = cv2.morphologyEx(red_mask, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
             # cv2.imshow("TT", red_mask)
             green_mask = cv2.inRange(hsv_frame, lower_green, upper_green)
             blue_mask = cv2.inRange(hsv_frame, lower_blue, upper_blue)
@@ -100,6 +106,8 @@ def vision_block(conn1,conn2):
                         mean_color_1 = [int(mean_color[0]),int(mean_color[1]),int(mean_color[2])]
                         # print(mean_color)
                         if check_color_range(mean_color_1, lower_red, upper_red):
+                            one_block_data.append(1)
+                        elif check_color_range(mean_color_1, lower_red_1, upper_red_1):
                             one_block_data.append(1)
                         elif check_color_range(mean_color_1, lower_green, upper_green):
                             one_block_data.append(2)
