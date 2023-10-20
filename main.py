@@ -4,7 +4,7 @@ import psutil
 import os
 
 import vision_left.main
-import vision_block.main
+import vision_block.main_tt
 
 if __name__ == '__main__':
     with open('main.pid', 'w') as pid_file:
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     psutil.Process(p_angle.pid).cpu_affinity([0,1])
     processes.append(p_angle)
 
-    p_block = multiprocessing.Process(target=vision_block.main.vision_block,args=(conn2,conn4,))
+    p_block = multiprocessing.Process(target=vision_block.main_tt.vision_block,args=(conn2,conn4,))
     # os.sched_setaffinity(p.pid,[i]) # 绑定到第i个CPU核心
     p_block.daemon = True
     p_block.start()
