@@ -158,7 +158,7 @@ def vision_left(conn1,conn2):
     if system == 'Windows':
         port='COM1'
         # 初始化摄像头
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
     elif system == 'Linux':
         port='/dev/ttyUSB0'
         # 初始化摄像头
@@ -191,8 +191,8 @@ def vision_left(conn1,conn2):
             serial0_available = 0
             print("没有检测到屏幕串口", flush=True)
         
-        ser0.write(("t2.txt=\""+ "Get Ready!" +"\"").encode())
-        ser0.write(bytes.fromhex('ff ff ff'))
+        # ser0.write(("t2.txt=\""+ "Get Ready!" +"\"").encode())
+        # ser0.write(bytes.fromhex('ff ff ff'))
 
         while True:
             # start_time = time.perf_counter()
@@ -329,35 +329,35 @@ def vision_left(conn1,conn2):
                         frame_data.append(0)
                         # 接收到来自Block程序的数据
                         # if conn1.poll():
-                        block_data = conn1.recv()
-                        if len(block_data) > 0:
-                            max_y = max(block_data, key=lambda x: x[2])
-                            max_y_index = block_data.index(max_y)
-                            frame_data[5] = block_data[max_y_index][0]
-                            delta_block_x = int((block_data[max_y_index][1] - frame_wh[0]/2)/frame_wh[0]*127)
-                            delta_block_y = int((block_data[max_y_index][2] - frame_wh[1]/2)/frame_wh[1]*127)
-                            if delta_block_x < 0:
-                                delta_block_x = 255 + delta_block_x
-                            if delta_block_y < 0:
-                                delta_block_y = 255 + delta_block_y
-                            frame_data[6] = delta_block_x
-                            frame_data[7] = delta_block_y
+                        # block_data = conn1.recv()
+                        # if len(block_data) > 0:
+                        #     max_y = max(block_data, key=lambda x: x[2])
+                        #     max_y_index = block_data.index(max_y)
+                        #     frame_data[5] = block_data[max_y_index][0]
+                        #     delta_block_x = int((block_data[max_y_index][1] - frame_wh[0]/2)/frame_wh[0]*127)
+                        #     delta_block_y = int((block_data[max_y_index][2] - frame_wh[1]/2)/frame_wh[1]*127)
+                        #     if delta_block_x < 0:
+                        #         delta_block_x = 255 + delta_block_x
+                        #     if delta_block_y < 0:
+                        #         delta_block_y = 255 + delta_block_y
+                        #     frame_data[6] = delta_block_x
+                        #     frame_data[7] = delta_block_y
 
                         # 发送串口数据
                         frame_data.append(0)
-                        if qrcode_number != '' and len(qrcode_number) == 7:
-                            frame_data[8] = convert_to_need_numbers(parsing_scanned_qrcode_data(qrcode_number))
-                            # 为0BUG
-                        other_circles_data = conn2.recv()
-                        for i in range(3):
-                            for j in range(3):
-                                if j == 1:
-                                    item_block_circle_data = int(other_circles_data[i][j]/frame_wh[0]*255)
-                                elif j == 2:
-                                    item_block_circle_data = int(other_circles_data[i][j]/frame_wh[1]*255)
-                                else:
-                                    item_block_circle_data = other_circles_data[i][j]
-                                frame_data.append(item_block_circle_data)
+                        # if qrcode_number != '' and len(qrcode_number) == 7:
+                        #     frame_data[8] = convert_to_need_numbers(parsing_scanned_qrcode_data(qrcode_number))
+                        #     # 为0BUG
+                        # other_circles_data = conn2.recv()
+                        # for i in range(3):
+                        #     for j in range(3):
+                        #         if j == 1:
+                        #             item_block_circle_data = int(other_circles_data[i][j]/frame_wh[0]*255)
+                        #         elif j == 2:
+                        #             item_block_circle_data = int(other_circles_data[i][j]/frame_wh[1]*255)
+                        #         else:
+                        #             item_block_circle_data = other_circles_data[i][j]
+                        #         frame_data.append(item_block_circle_data)
                         frame_data.append(13)
                         # print(frame_data[:])
                         if serial_available == 1:
@@ -370,8 +370,9 @@ def vision_left(conn1,conn2):
         print("Left摄像头无法打开", flush=True)
 
 if __name__ == '__main__':
-    print(convert_to_hex(parsing_scanned_qrcode_data("123+123")))
-    # # 创建串口对象
+    vision_left(False,False)
+    # print(convert_to_hex(parsing_scanned_qrcode_data("123+123")))
+    # 创建串口对象
     # if system == 'Windows':
     #     port='COM1'
     #     # 初始化摄像头
@@ -383,11 +384,11 @@ if __name__ == '__main__':
     # else:
     #     print(system, flush=True)
     # cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
-    # # ser = serial.Serial(
-    # #     port="/dev/serial0",
-    # #     baudrate=115200,  # 波特率，根据实际情况修改
-    # #     timeout=1  # 超时时间，根据实际情况修改
-    # # )
+    # ser = serial.Serial(
+    #     port="/dev/serial0",
+    #     baudrate=115200,  # 波特率，根据实际情况修改
+    #     timeout=1  # 超时时间，根据实际情况修改
+    # )
     # while True:
     #     ret, frame = cap.read()
-    #     # update_screen_by_qrcode(frame,ser,1)
+    #     update_screen_by_qrcode(frame,ser,1)

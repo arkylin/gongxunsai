@@ -5,10 +5,10 @@ import numpy as np
 frame_wh = (400,300)
 
 # 初始化摄像头
-cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(1,cv2.CAP_DSHOW)
 
 # 定义黄色的颜色范围
-lower_yellow = np.array([20, 70, 0])
+lower_yellow = np.array([20, 30, 30])
 upper_yellow = np.array([40, 255, 255])
 
 while True:
