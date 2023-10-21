@@ -254,7 +254,7 @@ def vision_left(conn1,conn2):
                     # 进行多边形逼近，迭代逼近直到达到目标边数
                     epsilon = 0.01  # 初始逼近精度
                     max_iterations = 100  # 最大迭代次数
-                    target_num_sides = [3,4,5]
+                    target_num_sides = [4,5]
                     for _ in range(max_iterations):
                         approx = cv2.approxPolyDP(hull, epsilon * cv2.arcLength(hull, True), closed=True)
                         num_sides = len(approx)
