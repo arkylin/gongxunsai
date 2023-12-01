@@ -42,6 +42,24 @@ def kalman(val):
 
 # filtered_values = []
 
+X1 = np.asarray([0])  # 最优估计状态
+P1 = np.asarray([1])  # 最优状态协方差矩阵
+Q1 = np.asarray([0.0025])  # 状态转移方差  (预测模型的方差)
+F1 = np.asarray([1])  # 状态转移矩阵
+H1 = np.asarray([1])  # 观测矩阵
+R1 = 0.1  # 观测噪声方差
+B1 = np.asarray([1])  # 控制矩阵
+EYE1 = np.asarray([1])
+
+def kalman1(val):
+    global X1, P1, Q1, F1, H1, R1, B1, EYE1
+    X_ = F1 * X1
+    P_ = F1 * P1 * F1.T + Q1
+    K = (P_ * H1.T) / (H1 * P_ * H1.T + R1)
+    X1 = X_ + K * (val - H1 * X_)
+    P1 = (EYE1 - K * H1) * P_
+    return X1[0]
+
 def guaijiaoshibie(jiaodiancanshu):
     jiaodianshu = len(jiaodiancanshu)
     # [[[639   0]]
