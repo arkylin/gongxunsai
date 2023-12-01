@@ -254,7 +254,7 @@ def vision_left(conn1,conn2):
                     # 进行多边形逼近，迭代逼近直到达到目标边数
                     epsilon = 0.01  # 初始逼近精度
                     max_iterations = 100  # 最大迭代次数
-                    target_num_sides = [4,5]
+                    target_num_sides = [3,4,5]
                     for _ in range(max_iterations):
                         approx = cv2.approxPolyDP(hull, epsilon * cv2.arcLength(hull, True), closed=True)
                         num_sides = len(approx)
@@ -358,6 +358,26 @@ def vision_left(conn1,conn2):
                                 else:
                                     item_block_circle_data = other_circles_data[i][j]
                                 frame_data.append(item_block_circle_data)
+                        block_box_dx = frame_data[10]-frame_data[13]
+                        block_box_dy = frame_data[11]-frame_data[14]
+                        if block_box_dx != 0:
+                            block_box_slope = block_box_dy / block_box_dx
+                            # 计算夹角
+                            block_box_angle_rad = math.atan(block_box_slope)
+                            block_box_angle_deg = math.degrees(block_box_angle_rad)
+                        else:
+                            block_box_angle_deg = 90
+                        
+                        block_box_filtered_value = kalman1(block_box_angle_deg)
+                        # 将整数转换为4位16进制
+                        block_box_multiplied_value = int(block_box_filtered_value * 100)
+                        if block_box_multiplied_value >= 0:
+                            block_box_hex_representation = format(block_box_multiplied_value, '04X')
+                        else:
+                            block_box_hex_representation = format((1 << 16) + block_box_multiplied_value, '04X')
+
+                        frame_data.append(int(block_box_hex_representation[:2],16))
+                        frame_data.append(int(block_box_hex_representation[2:],16))
                         frame_data.append(13)
                         # print(frame_data[:])
                         if serial_available == 1:

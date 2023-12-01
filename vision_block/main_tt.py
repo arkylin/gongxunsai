@@ -16,7 +16,7 @@ lower_red_1 = np.array([155, 100, 100])
 upper_red_1 = np.array([180, 255, 255])
 
 # 绿色范围
-lower_green = np.array([40, 100, 100])
+lower_green = np.array([35, 43, 46])
 upper_green = np.array([85, 255, 255])
 
 # 蓝色范围
@@ -96,39 +96,39 @@ def vision_block(conn1,conn2):
                         (circle_x, circle_y), circle_radius = cv2.minEnclosingCircle(hull)
                         circle_center = (int(circle_x), int(circle_y))
                         circle_radius = int(circle_radius)
+                        if circle_y >= 80 and circle_y <= 180:
+                            # 计算凸包区域的平均颜色
+                            color_hull_mask = np.zeros(frame.shape[:2], dtype=np.uint8)
+                            # cv2.circle(color_hull_mask, (block_x, block_y), 25, (255, 255, 255), -1)
+                            cv2.circle(color_hull_mask, circle_center, 15, (255, 255, 255), -1)
+                            # cv2.imshow("TT",color_hull_mask)
+                            mean_color = cv2.mean(hsv_frame, mask=color_hull_mask)[:3]
+                            mean_color_1 = [int(mean_color[0]),int(mean_color[1]),int(mean_color[2])]
+                            # print(mean_color)
+                            if check_color_range(mean_color_1, lower_red, upper_red):
+                                one_block_data.append(1)
+                            elif check_color_range(mean_color_1, lower_red_1, upper_red_1):
+                                one_block_data.append(1)
+                            elif check_color_range(mean_color_1, lower_green, upper_green):
+                                one_block_data.append(2)
+                            elif check_color_range(mean_color_1, lower_blue, upper_blue):
+                                one_block_data.append(3)
+                            # else:
+                            #     print(mean_color, flush=True)
+                            #     one_block_data.append("null")
+                            #     one_block_data.append(mean_color)
 
-                        # 计算凸包区域的平均颜色
-                        color_hull_mask = np.zeros(frame.shape[:2], dtype=np.uint8)
-                        # cv2.circle(color_hull_mask, (block_x, block_y), 25, (255, 255, 255), -1)
-                        cv2.circle(color_hull_mask, circle_center, 25, (255, 255, 255), -1)
-                        # cv2.imshow("TT",color_hull_mask)
-                        mean_color = cv2.mean(hsv_frame, mask=color_hull_mask)[:3]
-                        mean_color_1 = [int(mean_color[0]),int(mean_color[1]),int(mean_color[2])]
-                        # print(mean_color)
-                        if check_color_range(mean_color_1, lower_red, upper_red):
-                            one_block_data.append(1)
-                        elif check_color_range(mean_color_1, lower_red_1, upper_red_1):
-                            one_block_data.append(1)
-                        elif check_color_range(mean_color_1, lower_green, upper_green):
-                            one_block_data.append(2)
-                        elif check_color_range(mean_color_1, lower_blue, upper_blue):
-                            one_block_data.append(3)
-                        # else:
-                        #     print(mean_color, flush=True)
-                        #     one_block_data.append("null")
-                        #     one_block_data.append(mean_color)
+                            one_block_data.append(int(circle_x))
+                            one_block_data.append(int(circle_y))
+                            if system == "Windows":
+                                # cv2.circle(frame, (block_x, block_y), 5, (0, 255, 0), -1)
+                                # cv2.drawContours(frame, [hull], 0, (0, 255, 0), 2)
+                                # cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-                        one_block_data.append(int(circle_x))
-                        one_block_data.append(int(circle_y))
-                        if system == "Windows":
-                            # cv2.circle(frame, (block_x, block_y), 5, (0, 255, 0), -1)
-                            # cv2.drawContours(frame, [hull], 0, (0, 255, 0), 2)
-                            # cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
-                            (circle_x, circle_y), circle_radius = cv2.minEnclosingCircle(hull)
-                            circle_center = (int(circle_x), int(circle_y))
-                            circle_radius = int(circle_radius)
-                            cv2.circle(frame, circle_center, circle_radius, (255, 255, 255), 2)  # 绘制圆形框
+                                (circle_x, circle_y), circle_radius = cv2.minEnclosingCircle(hull)
+                                circle_center = (int(circle_x), int(circle_y))
+                                circle_radius = int(circle_radius)
+                                cv2.circle(frame, circle_center, circle_radius, (255, 255, 255), 2)  # 绘制圆形框
                     # print(one_block_data)
                     if len(one_block_data) == 3 :
                         block_data.append(one_block_data)
