@@ -376,26 +376,26 @@ def vision_left(conn1,conn2):
                                 else:
                                     item_block_circle_data = other_circles_data[i][j]
                                 frame_data.append(item_block_circle_data)
-                        block_box_dx = frame_data[10]-frame_data[13]
-                        block_box_dy = frame_data[11]-frame_data[14]
-                        if block_box_dx != 0:
-                            block_box_slope = block_box_dy / block_box_dx
-                            # 计算夹角
-                            block_box_angle_rad = math.atan(block_box_slope)
-                            block_box_angle_deg = math.degrees(block_box_angle_rad)
-                        else:
-                            block_box_angle_deg = 90
+                        # block_box_dx = frame_data[10]-frame_data[13]
+                        # block_box_dy = frame_data[11]-frame_data[14]
+                        # if block_box_dx != 0:
+                        #     block_box_slope = block_box_dy / block_box_dx
+                        #     # 计算夹角
+                        #     block_box_angle_rad = math.atan(block_box_slope)
+                        #     block_box_angle_deg = math.degrees(block_box_angle_rad)
+                        # else:
+                        #     block_box_angle_deg = 90
                         
-                        block_box_filtered_value = kalman1(block_box_angle_deg)
-                        # 将整数转换为4位16进制
-                        block_box_multiplied_value = int(block_box_filtered_value * 100)
-                        if block_box_multiplied_value >= 0:
-                            block_box_hex_representation = format(block_box_multiplied_value, '04X')
-                        else:
-                            block_box_hex_representation = format((1 << 16) + block_box_multiplied_value, '04X')
+                        # block_box_filtered_value = kalman1(block_box_angle_deg)
+                        # # 将整数转换为4位16进制
+                        # block_box_multiplied_value = int(block_box_filtered_value * 100)
+                        # if block_box_multiplied_value >= 0:
+                        #     block_box_hex_representation = format(block_box_multiplied_value, '04X')
+                        # else:
+                        #     block_box_hex_representation = format((1 << 16) + block_box_multiplied_value, '04X')
 
-                        frame_data.append(int(block_box_hex_representation[:2],16))
-                        frame_data.append(int(block_box_hex_representation[2:],16))
+                        # frame_data.append(int(block_box_hex_representation[:2],16))
+                        # frame_data.append(int(block_box_hex_representation[2:],16))
                         frame_data.append(13)
                         # print(frame_data[:])
                         if serial_available == 1:
