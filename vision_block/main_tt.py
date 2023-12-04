@@ -16,7 +16,7 @@ lower_red_1 = np.array([155, 100, 100])
 upper_red_1 = np.array([180, 255, 255])
 
 # 绿色范围
-lower_green = np.array([35, 43, 46])
+lower_green = np.array([40, 100, 100]) #35 43 46
 upper_green = np.array([85, 255, 255])
 
 # 蓝色范围
@@ -32,7 +32,8 @@ def vision_block(conn1,conn2):
     # 初始化摄像头
     if system == 'Windows':
         # 初始化摄像头
-        cap = cv2.VideoCapture(1)
+        # cap = cv2.VideoCapture(1)
+        cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
     elif system == 'Linux':
         # 初始化摄像头
         cap = cv2.VideoCapture("/dev/block_video0")
@@ -52,18 +53,20 @@ def vision_block(conn1,conn2):
             hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
             # 创建黄色和灰色的掩码
-            red_mask = cv2.inRange(hsv_frame, lower_red, upper_red)
+            red_mask_0 = cv2.inRange(hsv_frame, lower_red, upper_red)
             red_mask_1 = cv2.inRange(hsv_frame, lower_red_1, upper_red_1)
-            red_mask = cv2.bitwise_or(red_mask,red_mask_1)
+            red_mask = cv2.bitwise_or(red_mask_0,red_mask_1)
             # red_mask = cv2.morphologyEx(red_mask, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
             # cv2.imshow("TT", red_mask)
             green_mask = cv2.inRange(hsv_frame, lower_green, upper_green)
             blue_mask = cv2.inRange(hsv_frame, lower_blue, upper_blue)
-            mask = cv2.bitwise_or(red_mask,cv2.bitwise_or(green_mask,blue_mask))
+            mask_origin = cv2.bitwise_or(red_mask,cv2.bitwise_or(green_mask,blue_mask))
+            # mask_origin = green_mask
+            # cv2.imshow("TT", mask_origin)
 
             # # 对掩码进行形态学操作，以去除噪声
             kernel = np.ones((5, 5), np.uint8)
-            mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+            mask = cv2.morphologyEx(mask_origin, cv2.MORPH_OPEN, kernel)
             mask = cv2.rectangle(mask,(0,frame_wh[1]-100),(frame_wh[0],frame_wh[1]),(0,0,0),-1)
             # cv2.imshow("TT", mask)
 
@@ -102,6 +105,8 @@ def vision_block(conn1,conn2):
                             # cv2.circle(color_hull_mask, (block_x, block_y), 25, (255, 255, 255), -1)
                             cv2.circle(color_hull_mask, circle_center, 15, (255, 255, 255), -1)
                             # cv2.imshow("TT",color_hull_mask)
+                            color_hull_mask = cv2.bitwise_and(color_hull_mask,mask_origin)
+                            # cv2.imshow("TT",mask_origin)
                             mean_color = cv2.mean(hsv_frame, mask=color_hull_mask)[:3]
                             mean_color_1 = [int(mean_color[0]),int(mean_color[1]),int(mean_color[2])]
                             # print(mean_color)

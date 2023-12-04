@@ -15,7 +15,7 @@ cv2.createTrackbar('Upper Saturation', 'image', 255, 255, nothing)
 cv2.createTrackbar('Upper Value', 'image', 255, 255, nothing)
 
 # 初始化摄像头
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
 
 while True:
