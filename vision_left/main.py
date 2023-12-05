@@ -409,8 +409,8 @@ def vision_left(conn1,conn2):
 
                         # 发送串口数据
                         frame_data.append(0)
-                        print(task_number)
-                        if task_number != '' or task_number != 0:
+                        # print(task_number)
+                        if task_number != '' and task_number != 0:
                             if len(task_number) == 7:
                                 frame_data[8] = convert_to_need_numbers(parsing_renwu_data(task_number))
                             # 为0BUG
