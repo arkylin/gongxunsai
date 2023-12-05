@@ -6,6 +6,8 @@ import math
 import serial
 import platform
 from pyzbar import pyzbar
+import subprocess
+from get_info.main import getNum
 
 system = platform.system()
 
@@ -20,7 +22,9 @@ claw_xy = (200, 150)
 GUAIJIAO = 0
 # jiaodianshu_last = 0
 
-qrcode_data = "qrcode.txt"
+renwu_data = "task.txt"
+
+is_wifi_task = False
 
 X = np.asarray([0])  # 最优估计状态
 P = np.asarray([1])  # 最优状态协方差矩阵
@@ -123,7 +127,7 @@ def update_screen_by_qrcode(image,ser="",action=1):
     data = decode_qr_code(image)
     if action == 1:
         if len(data) > 0 and len(data[0]) == 7:
-            with open(qrcode_data, "w") as file:
+            with open(renwu_data, "w") as file:
                 file.write(data[0])
                 file.close()
             if ser != "":
@@ -132,7 +136,7 @@ def update_screen_by_qrcode(image,ser="",action=1):
                 ser.write(bytes.fromhex('ff ff ff'))      
             return data[0]
     elif action == 0:
-        with open(qrcode_data, "r") as file:
+        with open(renwu_data, "r") as file:
             data = file.read()
             file.close()
     return 0
@@ -153,7 +157,7 @@ def convert_to_need_numbers(lst):
     else:
         return 0
 
-def parsing_scanned_qrcode_data(data):
+def parsing_renwu_data(data):
     if "+" in data and len(data) == 7 :
         data = data.split("+")
         datalist = [123,132,213,231,312,321]
@@ -170,8 +174,8 @@ def vision_left(conn1,conn2):
     old_value_y = 0
     serial_available = 0
     serial0_available = 0
-    if os.path.exists(qrcode_data):
-        os.remove(qrcode_data)
+    if os.path.exists(renwu_data):
+        os.remove(renwu_data)
     # 创建串口对象
     if system == 'Windows':
         port='COM1'
@@ -209,8 +213,19 @@ def vision_left(conn1,conn2):
             serial0_available = 0
             print("没有检测到屏幕串口", flush=True)
         
-        ser0.write(("t2.txt=\""+ "Get Ready!" +"\"").encode())
-        ser0.write(bytes.fromhex('ff ff ff'))
+        if system == 'Linux':
+            ser0.write(("t2.txt=\""+ "Get Ready!" +"\"").encode())
+            ser0.write(bytes.fromhex('ff ff ff'))
+            if is_wifi_task:
+                time.sleep(20)
+                try:
+                    cmd = "hostname -I | cut -d\' \' -f1"
+                    IP = subprocess.check_output(cmd, shell = True )
+                    IP = IP.decode().replace("\n","")
+                    ser0.write(("t2.txt=\""+ IP +"\"").encode())
+                    ser0.write(bytes.fromhex('ff ff ff'))
+                except:
+                    print("IP failed!")
 
         while True:
             # start_time = time.perf_counter()
@@ -218,17 +233,48 @@ def vision_left(conn1,conn2):
             ret, frame = cap.read()
             frame = cv2.resize(frame, frame_wh)
 
-            if system == 'Linux':
-                if os.path.exists(qrcode_data):
+            if is_wifi_task:
+                if os.path.exists(renwu_data):
                     # print("识别到二维码", flush=True)
                     pass
                 else:
                     # print("正在识别二维码")
-                    qrcode_number = update_screen_by_qrcode(frame,ser0,1)
+                    get_renwushu = getNum(ip="192.168.31.49",remote_port=8080,local_port=7777,tu="udp")
+                    if get_renwushu == 1:
+                        if serial0_available == 1:
+                            ser0.write(("t2.txt=\""+ "Timeout!!!" +"\"").encode())
+                            ser0.write(bytes.fromhex('ff ff ff'))
+                        else:
+                            print("Timeout!!!")
+                    elif get_renwushu == 0:
+                        if serial0_available == 1:
+                            ser0.write(("t2.txt=\""+ "Error!!!" +"\"").encode())
+                            ser0.write(bytes.fromhex('ff ff ff'))
+                        else:
+                            print("Error!!!")
+                    elif len(get_renwushu) == 7:
+                        with open(renwu_data, "w") as file:
+                            file.write(get_renwushu)
+                            file.close()
+                        if serial0_available == 1:
+                            # 传递显示参数
+                            ser0.write(("t0.txt=\""+ get_renwushu +"\"").encode())
+                            ser0.write(bytes.fromhex('ff ff ff')) 
+                        else:
+                            print(get_renwushu)
                     continue
+            else:
+                if system == 'Linux':
+                    if os.path.exists(renwu_data):
+                        # print("识别到二维码", flush=True)
+                        pass
+                    else:
+                        # print("正在识别二维码")
+                        task_number = update_screen_by_qrcode(frame,ser0,1)
+                        continue
             
-            # if qrcode_number != '':
-            #     send_serial_data(ser0,[0,convert_to_hex(parsing_scanned_qrcode_data("123+123")),13])
+            # if task_number != '':
+            #     send_serial_data(ser0,[0,convert_to_hex(parsing_renwu_data("123+123")),13])
 
             # 将图像转换为HSV颜色空间
             hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -363,8 +409,8 @@ def vision_left(conn1,conn2):
 
                         # 发送串口数据
                         frame_data.append(0)
-                        if qrcode_number != '' and len(qrcode_number) == 7:
-                            frame_data[8] = convert_to_need_numbers(parsing_scanned_qrcode_data(qrcode_number))
+                        if task_number != '' and len(task_number) == 7:
+                            frame_data[8] = convert_to_need_numbers(parsing_renwu_data(task_number))
                             # 为0BUG
                         other_circles_data = conn2.recv()
                         for i in range(3):
@@ -408,7 +454,7 @@ def vision_left(conn1,conn2):
         print("Left摄像头无法打开", flush=True)
 
 if __name__ == '__main__':
-    print(convert_to_hex(parsing_scanned_qrcode_data("123+123")))
+    print(convert_to_hex(parsing_renwu_data("123+123")))
     # # 创建串口对象
     # if system == 'Windows':
     #     port='COM1'
