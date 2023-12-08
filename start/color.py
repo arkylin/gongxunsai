@@ -11,9 +11,9 @@ image = np.zeros((300, 300, 3), dtype=np.uint8)
 cv2.namedWindow('HSV Color Slider')
 
 # 创建H、S和V的滑块
-cv2.createTrackbar('H', 'HSV Color Slider', 18, 179, on_trackbar_change)
-cv2.createTrackbar('S', 'HSV Color Slider', 23, 255, on_trackbar_change)
-cv2.createTrackbar('V', 'HSV Color Slider', 219, 255, on_trackbar_change)
+cv2.createTrackbar('H', 'HSV Color Slider', 22, 179, on_trackbar_change)
+cv2.createTrackbar('S', 'HSV Color Slider', 253, 255, on_trackbar_change)
+cv2.createTrackbar('V', 'HSV Color Slider', 216, 255, on_trackbar_change)
 
 while True:
     # 获取滑块的当前值

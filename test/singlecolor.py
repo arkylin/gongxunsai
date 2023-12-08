@@ -5,17 +5,21 @@ def nothing(x):
     pass
 
 # 创建窗口和滑动条
-cv2.namedWindow('image')
-cv2.createTrackbar('Lower Hue', 'image', 0, 179, nothing)
-cv2.createTrackbar('Lower Saturation', 'image', 100, 255, nothing)
-cv2.createTrackbar('Lower Value', 'image', 100, 255, nothing)
+# lower_yellow = np.array([20, 30, 30])
+# upper_yellow = np.array([40, 255, 255])
 
-cv2.createTrackbar('Upper Hue', 'image', 12, 179, nothing)
+cv2.namedWindow('image')
+cv2.createTrackbar('Lower Hue', 'image', 20, 179, nothing)
+cv2.createTrackbar('Lower Saturation', 'image', 0, 255, nothing)
+cv2.createTrackbar('Lower Value', 'image', 105, 255, nothing)
+
+cv2.createTrackbar('Upper Hue', 'image', 40, 179, nothing)
 cv2.createTrackbar('Upper Saturation', 'image', 255, 255, nothing)
 cv2.createTrackbar('Upper Value', 'image', 255, 255, nothing)
 
 # 初始化摄像头
-cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+# cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(1)
 cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
 
 while True:

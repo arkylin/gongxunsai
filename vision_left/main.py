@@ -12,8 +12,8 @@ from get_info.main import getNum
 system = platform.system()
 
 # 定义黄色的颜色范围
-lower_yellow = np.array([20, 30, 30])
-upper_yellow = np.array([40, 255, 255])
+lower_yellow = np.array([20, 40, 105]) #20 30 30
+upper_yellow = np.array([40, 255, 255]) #40 255 255
 
 frame_wh = (400,300)
 

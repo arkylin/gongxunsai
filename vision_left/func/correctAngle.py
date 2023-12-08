@@ -24,7 +24,8 @@ def kalman1(val):
     return X1[0]
     
 # 初始化摄像头
-cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+# cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(1)
 frame_wh = (400,300)
 
 while True:
