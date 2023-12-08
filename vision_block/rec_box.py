@@ -7,14 +7,14 @@ system = platform.system()
 
 # 红色范围
 lower_red = np.array([0, 100, 100])
-upper_red = np.array([20, 255, 255])
+upper_red = np.array([10, 255, 255]) #20 255 255
 
 # 绿色范围
-lower_green = np.array([35, 100, 100])
+lower_green = np.array([35, 60, 100]) #35 100 100
 upper_green = np.array([85, 255, 255])
 
 # 蓝色范围
-lower_blue = np.array([60, 35, 100])
+lower_blue = np.array([60, 30, 100]) #60 30 100
 upper_blue = np.array([130, 255, 255])
 
 # 红色范围
@@ -37,14 +37,22 @@ def box(hsv_frame):
     blue_mask = cv2.inRange(hsv_frame, lower_blue, upper_blue)
     mask = cv2.bitwise_or(red_mask,cv2.bitwise_or(green_mask,blue_mask))
     origin_result = cv2.bitwise_and(hsv_frame, hsv_frame, mask=mask)
-    result = cv2.cvtColor(origin_result,cv2.COLOR_HSV2RGB)
+    # cv2.imshow("Test",origin_result)
+    result = cv2.cvtColor(origin_result,cv2.COLOR_HSV2BGR)
+    # cv2.imshow("Test",result)
     result = cv2.cvtColor(result,cv2.COLOR_RGB2GRAY)
     kernel = np.ones((5, 5), np.uint8)
     result = cv2.morphologyEx(result, cv2.MORPH_GRADIENT, kernel)
     result = cv2.GaussianBlur(result, (5,5), 0)
     result = cv2.medianBlur(result, 5)
     #霍夫圆检测
-    circles = cv2.HoughCircles(result, cv2.HOUGH_GRADIENT, dp=1, minDist=50, param1=50, param2=30, minRadius=25, maxRadius=60)
+    circles = cv2.HoughCircles(result, cv2.HOUGH_GRADIENT, 
+        dp=1, 
+        minDist=50, 
+        param1=50, 
+        param2=30, 
+        minRadius=15, #25
+        maxRadius=60)
     circles_data = []
 
     # 如果检测到圆
@@ -57,9 +65,12 @@ def box(hsv_frame):
             if y >= 80 and y<=180:
                 circle_color = 0
                 circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
-                pure_circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
-                cv2.circle(circle_mask, (x, y), r, (255, 255, 255), -1)
-                cv2.circle(circle_mask, (x, y), int(r/3*2), (0, 0, 0), -1)
+                # pure_circle_mask = np.zeros(hsv_frame.shape[:2], dtype=np.uint8)
+                # cv2.circle(circle_mask, (x, y), r, (255, 255, 255), -1)
+                # cv2.circle(circle_mask, (x, y), int(r/3*2), (0, 0, 0), -1)
+                cv2.circle(circle_mask, (x, y), 30, (255,255,255), -1)
+                if system == 'Windows':
+                    cv2.imshow("Ttt",circle_mask)
 
                 pure_circle = cv2.bitwise_and(origin_result,origin_result,mask=circle_mask)
                 circle_gray = cv2.cvtColor(pure_circle, cv2.COLOR_HSV2BGR)
@@ -97,7 +108,8 @@ if __name__ == '__main__':
     # 初始化摄像头
     if system == 'Windows':
         # 初始化摄像头
-        cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+        # cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(1)
     elif system == 'Linux':
         # 初始化摄像头
         cap = cv2.VideoCapture("/dev/block_video0")

@@ -12,8 +12,8 @@ def nothing(x):
 cv2.namedWindow('image')
 cv2.createTrackbar('param1', 'image', 50, 100, nothing)
 cv2.createTrackbar('param2', 'image', 30, 100, nothing)
-cv2.createTrackbar('minRadius', 'image', 140, 200, nothing)
-cv2.createTrackbar('maxRadius', 'image', 170, 200, nothing)
+cv2.createTrackbar('minRadius', 'image', 25, 200, nothing)
+cv2.createTrackbar('maxRadius', 'image', 60, 200, nothing)
 
 while True:
     ret, frame = cap.read()
@@ -28,7 +28,7 @@ while True:
     maxRadius = cv2.getTrackbarPos('maxRadius', 'image')
 
     # 应用滑块的值到圆检测函数中
-    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 20,  
+    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 50,  
                             param1=param1, param2=param2, minRadius=minRadius, maxRadius=maxRadius)
     if circles is not None:  
         # 将找到的圆形转为整数  

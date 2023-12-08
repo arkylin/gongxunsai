@@ -6,14 +6,14 @@ def nothing(x):
 
 # 红色范围
 lower_red = np.array([0, 100, 100])
-upper_red = np.array([20, 255, 255])
+upper_red = np.array([10, 255, 255]) #20 255 255
 
 # 绿色范围
-lower_green = np.array([35, 100, 100])
+lower_green = np.array([35, 60, 100]) #35 100 100
 upper_green = np.array([85, 255, 255])
 
 # 蓝色范围
-lower_blue = np.array([60, 35, 100])
+lower_blue = np.array([60, 30, 100])
 upper_blue = np.array([130, 255, 255])
 
 # frame_wh = (640,480)
