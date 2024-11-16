@@ -1,5 +1,5 @@
 # 2023 工训赛树莓派源码
-git remote set-url origin http://:3000/x/gongxunsai
+git remote set-url origin http://169.254.225.101:3000/x/gongxunsai
 git clone http://:3000/x/gongxunsai
 ## 安装
 ### 克隆代码仓库
